@@ -9,7 +9,7 @@
     </head>
     <body>
         <!-- 로고 -->
-        <p><img src="{{url_for('static', filename='/images/logo.jpg')}}" height="1000" width="1000"></p>
+        <p><img src="{{url_for('static', filename='/images/logo.jpg')}}" height="100" width="100"></p>
         <!-- 제목 -->
         <input type="text" name="" id="" class="">
         <!-- 검색 메뉴 -->
@@ -21,6 +21,8 @@
                     <option value="name">상호명</option>
                     <option value="keyword">키워드</option>
                     <option value="sentence">문장</option>
+                    <!--주소 검색 추가-->
+                    <option value="add">주소</option>
                 </select>
             </div>
             <!-- 검색바 -->
