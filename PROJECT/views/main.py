@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 0627 이태양 작업중
 
 from flask import Blueprint, render_template, redirect, url_for, request
@@ -19,3 +20,13 @@ def search():
         # return redirect(url_for('search', data=data))
         # return redirect(url_for('search.html', data=data))
     return render_template('search.html')
+=======
+from flask import Blueprint
+
+bp = Blueprint('main', __name__, url_prefix='/')
+
+@bp.route('/')
+def main() : 
+    # 메인페이지 
+    return "메인페이지"
+>>>>>>> f65089d4acbb4c0a2622a316e7e98f5d005042df
