@@ -1,0 +1,42 @@
+<!-- 0627 이태양 작업중 -->
+
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body>
+        <!-- 로고 -->
+        <p><img src="{{url_for('static', filename='/images/logo.jpg')}}" height="1000" width="1000"></p>
+        <!-- 제목 -->
+        <input type="text" name="" id="" class="">
+        <!-- 검색 메뉴 -->
+        <form action="{{url_for('main.search')}}" method="post">
+            <div class="">
+                <label for="search_type" class="form-label">검색 메뉴</label>
+                <select name="search_type" id="" class="">
+                    <!-- 디폴트로 투명하게 '선택'이라는 글자 나타나게 -->
+                    <option value="name">상호명</option>
+                    <option value="keyword">키워드</option>
+                    <option value="sentence">문장</option>
+                </select>
+            </div>
+            <!-- 검색바 -->
+            <div class="">
+                <label for="" class="">검색어 입력</label>
+                <input type="text" name="keyword" id="" class="" placeholder="검색어를 입력하세요" maxlength="255" required>
+            </div>
+            <!-- 검색버튼 -->
+            <div class="">
+                <button type="submit" class="btn btn-primary">검색</button>
+            </div>
+        </form>
+        {% block contents %}{% endblock %}
+        <!-- 맨위로 버튼 -->
+        <footer>
+            <a href="#" role="button" class="SettingView-module__btn_setting___Z_3Uu SettingView-module__type_top___GkN8V" aria-pressed="false"><span class="blind">맨 위로 이동</span></a>
+        </footer>
+    </body>
+</html>
