@@ -1,0 +1,17 @@
+주소=https://www.yeogi.com/
+검색=https://www.yeogi.com/domestic-accommodations?sortType=RECOMMEND&keyword=%EC%A0%84%EC%A3%BC&page=?&personal=2&checkIn=2025-07-03&checkOut=2025-07-04&freeForm=true
+검색페이지 = 1~20
+
+# 검색 페이지 정보 셀렉터 (CSS 선택자 기준)
+검색=div.css-72v42m
+버튼=button.gc-box-button css-lb8yyn
+링크=a.css-wels0m
+숙소유형= ul.css-bl7zf6 < li
+숙소명=h3.css-1gxx2ac
+
+# 숙소 상세 정보 셀렉터
+숙소주소=span.css-1t5t2dt
+숙소별점=span.css-9ml4lz
+숙소특징=span.css-ki0lqh
+숙소평가=span.css-oj6onp
+숙소 이미지=img.css-nl3cnv.thumbnail-image
