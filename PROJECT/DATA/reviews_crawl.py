@@ -105,7 +105,9 @@ def get_accommodation_details(driver, links):
             print("태그가 없습니다", e)
             continue
         for i in range(count) :
-            soup = BeautifulSoup(driver.page_source, 'lxml')
+            response = requests.get(link)
+            html = response.text
+            soup = BeautifulSoup(html, 'html.parser')
             post = review_count(soup)
             posts.append(post)
         driver.implicitly_wait(3)

@@ -4,9 +4,6 @@ from selenium.webdriver.common.by import By
 import os
 import pandas as pd
 import time
-import requests
-
-
 
 targetPath = "PROJECT/DATA/LIST/"
 imgTargetPath = "PROJECT/DATA/imgs/"

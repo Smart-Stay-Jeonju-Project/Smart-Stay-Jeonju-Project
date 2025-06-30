@@ -97,7 +97,7 @@ def save_img_list(img_src_link) :
     if img_src_link :
         fullPath = targetPath + imgCSVFilename
         df = pd.DataFrame(img_src_link)
-        
+
         try :
             df.to_csv(f"{fullPath}", mode='a',index=False, encoding='utf-8-sig',header=False)
             print(f"{len(img_src_link)}개의 숙소의 상세 정보를 저장했습니다")
