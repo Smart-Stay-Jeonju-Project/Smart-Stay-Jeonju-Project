@@ -7,11 +7,11 @@ import os
 import pandas as pd
 import time
 
-targetPath = "PROJECT/DATA/LIST/"
-savetargetPath = "PROJECT/DATA/REVIEWS/"
+targetPath = "DATA/LIST/"
+savetargetPath = "DATA/REVIEWS/"
 File_Suffix = '여기어때_link.txt'
 print("현재 작업 경로:", os.getcwd())
-review_id = 'yeogi_accom_'
+review_id = 'yeogi_accom'
 
 
 # 웹 드라이버 객체 생성
@@ -37,7 +37,7 @@ def load_links_from_file(fullPath):
 
 number = 0
 
-def review_count(review, name) :
+def review_count(review, name, page_num, link_num) :
     global number
     number += 1
     import re
@@ -46,13 +46,8 @@ def review_count(review, name) :
         content_tag = review.select_one('div.css-1tof81b > p')
         if content_tag :
             content = re.sub(r"[^ㄱ-ㅎㅏ-ㅣ-가-힣0-9 ]", "", content_tag.get_text().strip())
-        else :
-            content = ""
-    except TimeoutError as e :
-        content_tag = review.select_one('div.css-1tof81b > p')
-        if content_tag :
-            content = re.sub(r"[^ㄱ-ㅎㅏ-ㅣ-가-힣0-9 ]", "", content_tag.get_text().strip())
     except Exception as e :
+        print(f"현재 리뷰 페이지 : {page_num}")
         print(f"리뷰내용을 가져오지 못했습니다.\n에러메세지 : {e}")
         content = ""
     try :
@@ -71,7 +66,8 @@ def review_count(review, name) :
         harf = 0
 
     rating = full + harf
-    review_post = {'id':f"{review_id}{number:03d}" ,'name':name, 'review_content':content, 'rating':rating, 'write_date':write_date }
+    review_id_name = f"{review_id}_{link_num:03d}_{number:03d}"
+    review_post = {'id': review_id_name,'name':name, 'review_content':content, 'rating':rating, 'write_date':write_date }
     print(review_post)
     return review_post
 
@@ -79,10 +75,9 @@ def all_save_reviews(all_review) :
     import json
     if not all_review :
         print("저장할 리뷰가 없습니다")
-    print(all_review)
+    
     filename = "모든리뷰상세정보.json"
     fullPath = savetargetPath + filename
-
     try :
         with open(fullPath, 'w', encoding='utf-8-sig') as f :
             json.dump(all_review, f, indent=4, ensure_ascii=False)
@@ -136,7 +131,9 @@ def save_reviews(reviews) :
 def get_review_details(driver, links):
     reviews = []
     all_reviews = []
-    for link in links[:1] :
+    link_num = 0
+    for link in links[:] :
+        link_num += 1
         driver.get(link)
         time.sleep(4)
         soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -165,14 +162,18 @@ def get_review_details(driver, links):
             4. 다음 페이지로 이동하면 정보 수집
             '''
             count = 1
-            for page_num in range(review_page + 1) :
+            for page_num in range(1, review_page + 1) :
                 soup = BeautifulSoup(driver.page_source, 'html.parser')
                 search_tag = soup.select('div.css-1bjv6bx')
                 time.sleep(5)
                 for review in search_tag :
-                    post = review_count(review, name)
+                    post = review_count(review, name, page_num, link_num)
                     reviews.append(post)
+                    all_reviews.append(post)
                 try :
+                    if len(reviews) >= 50 :
+                        save_reviews(reviews)
+                        reviews = []
                     count += 1
                     if count % 5 == 1 :
                         next_btn = WebDriverWait(driver, 10).until(
@@ -181,7 +182,7 @@ def get_review_details(driver, links):
                         driver.execute_script("arguments[0].scrollIntoView(true);", next_btn)
                         time.sleep(5)
                         driver.execute_script("arguments[0].click();",next_btn)
-                        print("다음 페이지로 이동합니다")
+                        print(f"다음 {count} 페이지로 이동합니다")
                         time.sleep(7.5)
                     else :
                         now_btn = 'button.css-1rpwxx7'
@@ -194,17 +195,12 @@ def get_review_details(driver, links):
                         driver.execute_script("arguments[0].click();",next_page)
                         print(f"{count} 페이지로 이동합니다")
                         time.sleep(7.5)
-                    if len(reviews) >= 10 :
-                        save_reviews(reviews)
-                        all_reviews.append(reviews)
-                        reviews = []
                 except Exception as e :
                     print("다음 페이지로 이동 실패", e)
                     return all_reviews
         except Exception as e :
             print("버튼 클릭 실패 :", e)
             return all_reviews
-
 
 def main():
     driver = initialze_driver()
@@ -223,7 +219,7 @@ def main():
         print(f"{len(all_reviews)} 건이 저장되었습니다")
     except Exception as e :
         print("최종 저장하지 못했습니다", e)
-    
+
     driver.quit()
 
 
