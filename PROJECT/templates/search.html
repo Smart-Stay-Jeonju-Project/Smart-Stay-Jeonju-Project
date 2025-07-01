@@ -3,24 +3,10 @@
 {% block title %}검색결과 페이지{% endblock %}
 
 {% block contents %}
-    <!--검색 결과 추가-->
-    <h1>숙소리스트</h1>
-    <p>조회된 숙소 : {{contents['total']}}</p>
-    <table border = "1" width="800px"  class="table table-striped table-hover">
-        <tr class="table-dark">
-            <td>상호명</td>
-            <td>카테고리</td>
-            <td>상세주소</td>
-            <td>별점</td>
-        </tr>
-            {% for content in contents['list'] %}
-                <tr>
-                    <td>{{content['name']}}</td>
-                    <td>{{content['category']}}</td>
-                    <td>{{content['address']}}</td>
-                    <td>{{content['aRating']}}</td>
-                </tr>
-            {% endfor %}
-        </table>
-    <a href="/result" class="btn btn-primary">상세 페이지로 이동</a>
+    <form action="{{ url_for('result.on_result') }}" method="get">
+        검색결과 페이지 기능들
+        <input type="hidden" name="search_type" value="{{ search_type }}">
+        <input type="hidden" name="search_term" value="{{ search_term }}">
+        <button type="submit">상세 페이지로 이동</button>
+    </form>
 {% endblock %}
