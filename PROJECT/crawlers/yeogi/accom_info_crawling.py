@@ -5,9 +5,9 @@ import os
 import pandas as pd
 import time
 
-targetPath = "PROJECT/DATA/LIST/"
-imgTargetPath = "PROJECT/DATA/imgs/"
-File_Suffix = '여기어때_link.txt'
+targetPath = "DATA/RAW/LINKS/"
+saveTargetPath = "DATA/RAW/accommodations/"
+File_Suffix = 'yeogi_link.txt'
 print("현재 작업 경로:", os.getcwd())
 
 fullPath = targetPath + File_Suffix
@@ -36,21 +36,21 @@ def load_links_from_file(fullPath):
         print("파일을 불러오는 데 실패했습니다. error:", e)
 
 
-def load_info() :
-    filename = "숙소상세정보.csv"
-    fullPath = targetPath + filename
-    df = pd.read_csv(fullPath)
-    new_df = df.drop_duplicates(['name'], keep='first')
-    filename = "숙소상세정보(중복제거).csv"
-    fullPath = targetPath + filename
-    new_df.to_csv(f"{fullPath}", index=False, encoding='utf-8-sig',header=False)
-    return new_df
+# def load_info() :
+#     filename = "숙소상세정보.csv"
+#     fullPath = targetPath + filename
+#     df = pd.read_csv(fullPath)
+#     new_df = df.drop_duplicates(['name'], keep='first')
+#     filename = "숙소상세정보(중복제거).csv"
+#     fullPath = targetPath + filename
+#     new_df.to_csv(f"{fullPath}", index=False, encoding='utf-8-sig',header=False)
+#     return new_df
 
 # 키워드로 검색된 숙소의 상세 정보를 가져오기
 def get_accommodation_details(driver, links):
-    imsi_posts = {}
+    all_posts = []
     posts = []
-    for link in links[360:] :
+    for link in links[:] :
         driver.implicitly_wait(3)
         driver.get(url=link)
         time.sleep(3)
@@ -89,32 +89,38 @@ def get_accommodation_details(driver, links):
                 # , 'feature' : feature
                 }
         posts.append(post)
-        imsi_posts = post
-        print(imsi_posts)
+        all_posts.append(post)
         if len(posts) >= 20 :
-            load_info()
             print("20개의 정보가 초과되어 중간 저장합니다")
             if save_info(posts) :
                 print("중간 저장 완료했습니다")
                 posts = []
             else :
                 print("중간저장 하지 못했습니다")
-                return
-    load_info(posts)
+    save_info(all_posts)
 
 
 def save_info(all_info) :
     if all_info :
-        filename = "숙소상세정보.csv"
+        filename = "yeogi_info.csv"
         fullPath = targetPath + filename
         df = pd.DataFrame(all_info)
-        try :
+        # try :
+        #     df.to_csv(f"{fullPath}", mode='a',index=False, encoding='utf-8-sig',header=False)
+        #     print(f"{len(all_info)}개의 숙소의 상세 정보를 저장했습니다")
+        #     return True
+        # except Exception as e :
+        #     print(f"숙소의 상세 정보를 저장하지 못했습니다 {e}")
+        #     return False
+        if os.path.exists(fullPath) :
             df.to_csv(f"{fullPath}", mode='a',index=False, encoding='utf-8-sig',header=False)
-            print(f"{len(all_info)}개의 숙소의 상세 정보를 저장했습니다")
             return True
-        except Exception as e :
-            print(f"숙소의 상세 정보를 저장하지 못했습니다 {e}")
+        else :
+            open(fullPath, 'w', encoding='utf-8-sig').close()
+            print("기존 파일이 없거나 비어있어 새로 저장합니다\n파일경로 :", fullPath)
             return False
+
+
 
 def main():
     driver = initialze_driver()

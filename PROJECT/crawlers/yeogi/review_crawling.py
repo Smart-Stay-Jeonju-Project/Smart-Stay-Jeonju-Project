@@ -7,14 +7,11 @@ import os
 import pandas as pd
 import time
 
-print("현재 작업 경로:", os.getcwd())
-
 targetPath = "DATA/RAW/LINKS/"
 savetargetPath = "DATA/RAW/REVIEWS/"
-File_Suffix = '여기어때_link.txt'
+File_Suffix = 'yeogi_link.txt'
 print("현재 작업 경로:", os.getcwd())
 review_id = 'yeogi_accom'
-
 
 # 웹 드라이버 객체 생성
 def initialze_driver():
@@ -66,7 +63,7 @@ def review_count(review, name, page_num, link_num) :
         harf = 0.5 if review._find("svg.css-19sk4h4") else 0
     except Exception as e :
         harf = 0
-
+    link_num = int(link_num)
     rating = full + harf
     review_id_name = f"{review_id}_{link_num:03d}_{number:03d}"
     review_post = {'id': review_id_name,'name':name, 'review_content':content, 'rating':rating, 'write_date':write_date }
@@ -74,68 +71,60 @@ def review_count(review, name, page_num, link_num) :
     return review_post
 
 def all_save_reviews(all_review) :
-    import json
     if not all_review :
         print("저장할 리뷰가 없습니다")
     
-    filename = "모든리뷰상세정보.json"
+    filename = "yeogi_all_reviews.csv"
     fullPath = savetargetPath + filename
-    try :
-        with open(fullPath, 'w', encoding='utf-8-sig') as f :
-            json.dump(all_review, f, indent=4, ensure_ascii=False)
+    df = pd.DataFrame(all_review)
+
+    if os.path.exists(fullPath) and os.path.getsize(fullPath) > 0 :
+        try :
+            df.to_csv(fullPath, mode='a', encoding='utf-8-sig', index=False, header=False)
             print(f"리뷰 저장 완료, {len(all_review)} 건 추가 됨")
-    except Exception as e :
-        print(f"저장 오류 : {e}")
+        except Exception as e :
+            print(f"저장 오류 : {e}")
+    else :
+        df.to_csv(fullPath, mode='w', encoding='utf-8-sig', index=False, header=True)
 
 def save_reviews(reviews) :
-    import json
 
     if not reviews :
         print("저장할 리뷰가 없습니다")
-
-    print(reviews)
-    filename = "리뷰상세정보.json"
+    
+    filename = 'yeogi_reviews.csv'
     fullPath = savetargetPath + filename
 
-    old_df = []
-    old_contents = []
-    try :
-        if os.path.exists(fullPath) and os.path.getsize(fullPath) > 0 :
-            with open(fullPath, 'r', encoding='utf-8-sig') as f :
-                old_df = json.load(f)
-            old_contents = [ reviews['id'] for reviews in old_df ]
-        else :
-            print("기존 파일이 없거나 비어있습니다")
-    except Exception as e :
-        print("기존 파일 로딩 오류 :",e)
+    existing = set()
+
+    if os.path.exists(fullPath) :
+        try :
+            old_df = pd.read_csv(fullPath)
+            if 'id' in old_df.columns :
+                existing = set(old_df['id']) # 모든 ID를 문자열로 변환
+        except Exception as e :
+            print("기존 파일이 없거나 비어있어 새로 저장합니다\n파일경로 :", fullPath)
     
-    new_list = [ item for item in reviews if item['id'] not in old_contents ]
+    new_reviews = [item for item in reviews if item['id'] not in existing]
 
-    if not new_list :
-        print("새로운 리스트가 존재하지 않습니다")
+    if not new_reviews :
+        print("새로운 리뷰가 없습니다")
         return
-    combined = old_df + new_list
 
-    unique_combined = []
-    seen_contents = set()
-    for r in combined:
-        content = r['id']
-        if content not in seen_contents:
-            unique_combined.append(r)
-            seen_contents.add(content)
+    df = pd.DataFrame(new_reviews)
+    write_header = not os.path.exists(fullPath)
     try :
-        with open(fullPath, 'w', encoding='utf-8-sig') as f :
-            json.dump(unique_combined, f, indent=4, ensure_ascii=False)
-            print(f"리뷰 저장 완료, {len(new_list)} 건 추가 됨")
+        df.to_csv(fullPath, mode='a',index=False, encoding='utf-8-sig',header=write_header)
+        print(f"{len(new_reviews)}개의 리뷰를 저장했습니다 -> {fullPath}")
     except Exception as e :
-        print(f"저장 오류 : {e}")
+        print("저장의 오류가 발생하였습니다", e)
 
 def get_review_details(driver, links):
     reviews = []
     all_reviews = []
     link_num = 0
     for link in links[1:] :
-        link_num += 1
+        link_num = len(link)
         driver.get(link)
         time.sleep(4)
         soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -149,20 +138,7 @@ def get_review_details(driver, links):
             rating_count = int(rating_count)
         review_page = round (rating_count / 5)
         print(f"총 리뷰 페이지 : {review_page}")
-        # 총 리뷰 페이지 : 153
         try :
-            '''
-            첫 페이지 리뷰 수집
-            1. 리뷰 페이지를 도는 동안 리뷰 상세 정보를 가져온다
-            2. 페이지당 가져올 리뷰 수는 5개
-            3. 정보를 수집하면 페이지 이동(동적: 버튼 클릭)
-            3-1. 페이지 이동시 버튼의 class 이름이 새로 할당됨
-            3-2. 새로 할당된 버튼의 class 이름을 다시 가져옴
-            3-3. 현재 페이지 class 가 'button.css-1rpwxx7' 다음 페이지 class 가 'button.css-1v52o0s' 임
-            3-4. 현재 페이지 class 다음에 오는 class가 존재한다면 버튼을 클릭
-            3-5. 다음에 오는 class 가 존재하지 않다면, 5페이지 모두 수집 했기 때문에 'class['aria-label':'다음']' 버튼을 클릭
-            4. 다음 페이지로 이동하면 정보 수집
-            '''
             count = 1
             for page_num in range(1, review_page + 1) :
                 soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -173,7 +149,7 @@ def get_review_details(driver, links):
                     reviews.append(post)
                     all_reviews.append(post)
                 try :
-                    if len(reviews) >= 50 :
+                    if len(reviews) >= 30 :
                         save_reviews(reviews)
                         reviews = []
                     count += 1
