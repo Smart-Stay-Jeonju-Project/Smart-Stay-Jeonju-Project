@@ -16,8 +16,8 @@ CHECKIN_DATE = '2025-09-03'
 CHECKOUT_DATE = '2025-09-04'
 
 # 저장 변수
-targetPath = "PROJECT/CRAWLING/YEOGI/"
-link_filename = '여기어때_link.txt'
+targetPath = "DATA/ROW/LINKS/"
+link_filename = 'yeogi_accom_link.txt'
 
 # URL
 SEARCH_URL = f"https://www.yeogi.com/domestic-accommodations?keyword={KEYWORD}&checkIn={CHECKIN_DATE}&checkOut={CHECKOUT_DATE}&personal=2&freeForm=true"
@@ -89,6 +89,8 @@ def save_link(all_links) :
             with open(fullPath, 'r', encoding='utf-8') as f :
                 for line in f :
                     existing.add(line.strip())
+        else :
+            open(fullPath, 'w', encoding='utf-8').close()
         new_links = [ link for link in all_links if link not in existing ]
         if not new_links :
             print("새로운 링크가 없습니다")
@@ -100,7 +102,7 @@ def save_link(all_links) :
         return True
     
     except Exception as e :
-        print("페이지 링크를 저장하지 못했습니다")
+        print("페이지 링크를 저장하지 못했습니다", e)
         return False
 
 def main() :
