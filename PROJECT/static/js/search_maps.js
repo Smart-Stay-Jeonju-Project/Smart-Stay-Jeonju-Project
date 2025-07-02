@@ -15,7 +15,7 @@ function initMap () {
     // (ㄱ.클릭시 정보 제공)
     const infowindow = new google.maps.InfoWindow();
 
-    accommodations.forEach(({ name, lat, lng }) => {
+    accommodations.forEach(({ name, address, lat, lng }) => {
         const marker = new google.maps.Marker({
             position : { lat, lng },
             map,
@@ -26,7 +26,8 @@ function initMap () {
         marker.addListener("click", () => {
             // 마커 클릭시 지도 중심 이동
             map.panTo(marker.position);
-            infowindow.setContent(name);
+            // JavaScript에서 템플릿 문자열을 만드는 문법
+            infowindow.setContent(`<strong>${name}</strong><br><strong>${address}</strong>`);
             infowindow.open({
                 anchor: marker,
                 map,
@@ -36,10 +37,3 @@ function initMap () {
     // (3.객체의 fitbounds 메소드에 지도 경계 객체 넘김)
     map.fitBounds(bounds);
 };
-
-// 숙소상세정보(중복제거).csv
-// 구글 드라이브에서 스프레드 시트로
-// 확장 프로그램
-// 부가기능 설치하기
-// geocode 설치 후 실행
-// 데이터량에 따라 요금발생

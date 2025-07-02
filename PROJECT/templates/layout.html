@@ -22,7 +22,9 @@
                     <option value="sentence" {% if search_type == 'sentence' %}selected{% endif %}>문장</option>
                 </select>
                 <div id="keywordList" style="display: none; margin-top: 10px;">
-                    <strong>키워드를 선택하세요 :</strong>
+                    {% block keyword_title %}
+                    <strong>키워드를 선택하세요 : </strong>
+                    {% endblock %}
                     <ul>
                         {% for keyword in keyword_list %}
                         <li>

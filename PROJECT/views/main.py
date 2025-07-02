@@ -38,6 +38,8 @@ def home():
 def search():
     search_type = request.args.get('search_type', '').strip()
     search_term = request.args.get('search_term', '').strip()
+    print("search_type : ", search_type)
+    print("search_term : ", search_term)
 
     csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
 
@@ -46,7 +48,7 @@ def search():
         df['name'] = df['name'].astype(str).str.strip()
         df['address'] = df['address'].astype(str).str.strip()
 
-        # 상호명 선택 시 2글자 이상 요청
+        # 상호명 검색 (2글자 이상 포함)
         if search_type == 'name' :
             if len(search_term) < 2:
                 flash("검색어는 2글자 이상 입력해주세요.", "error")
@@ -56,25 +58,49 @@ def search():
             # 검색 하는
             # case=False : 대소문자 구분X, na=False : NaN도 False로 처리
             filtered_df = df[df['name'].str.contains(search_term, case=False, na=False, regex=False)]
-            # 검색 결과 체크 해보는
-            # print(filtered_df[['name']])
+            #검색 결과 체크 해보는
+            print("contains : \n",filtered_df[['name']])
             if not filtered_df.empty:
                 results = filtered_df.to_dict(orient='records')
-
                 print(filtered_df,results)
                 return render_template(
                     'search.html',
                     results=results,
                     search_type=search_type,
                     search_term=search_term,
-                    accommodations=results,  
+                    accommodations=results, 
+                    keyword_list=load_keywords(),
                     result=f"검색 결과 {len(results)}건"
                 )
             else :
                 flash("일치하는 자료가 없습니다. 다시 검색해주세요.", "error")
                 return redirect('/')
 
-        # 주소 선택 시 덕진구 or 완산구 입력 요청
+        # 키워드 검색
+        elif search_type == 'keyword':
+            df['keyword'] = df['keyword'].astype(str).fillna('').str.strip()
+            
+            # keyword 컬럼 내 쉼표로 구분된 키워드 각각에 대해 검색
+            word = df['keyword'].apply(lambda x: any(search_term == k.strip().replace(" ", "") for k in x.split(',')))
+
+            filtered_df = df[word]
+            
+            if not filtered_df.empty:
+                results = filtered_df.to_dict(orient='records')
+                return render_template(
+                    'search.html',
+                    results=results,
+                    search_type=search_type,
+                    search_term=search_term,
+                    accommodations=results,
+                    keyword_list=[search_term],
+                    result=f"'{search_term}' 키워드 검색 결과 {len(results)}건"
+                )
+            else:
+                flash("해당 키워드에 해당하는 자료가 없습니다.", "error")
+                return redirect('/')
+            
+        # 주소 검색 (덕진구, 완산구 요청)
         # 직접 주소 입력, 전주시만 검색 등 다른 요소 추가
         elif search_type == 'address' :
             if search_term not in ['덕진구', '완산구']:
@@ -91,6 +117,7 @@ def search():
                     search_type=search_type,
                     search_term=search_term,
                     accommodations=results,
+                    keyword_list=load_keywords(),
                     result=f"검색 결과 {len(results)}건"
                 )
             else:
