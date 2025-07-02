@@ -1,3 +1,5 @@
+// 검색타입이 주소면 보여주고 아니면 안보여주는
+
 function toggleSearchTermInput() {
     const searchType = document.getElementById('search_type').value;
     const textInputDiv = document.getElementById('text_input_div');

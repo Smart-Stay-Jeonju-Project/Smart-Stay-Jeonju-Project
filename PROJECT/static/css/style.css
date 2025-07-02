@@ -81,3 +81,20 @@ footer {
 .btn-top:hover {
     background-color: #ddd;
 }
+
+ul {
+    list-style: none; 
+    padding-left: 0;
+}
+
+li {
+    display: inline-block; 
+    margin: 5px;
+}
+
+a {
+    padding: 5px 10px; 
+    background: beige; 
+    border-radius: 5px; 
+    text-decoration: none;
+}
