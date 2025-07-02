@@ -16,7 +16,7 @@ CHECKIN_DATE = '2025-09-03'
 CHECKOUT_DATE = '2025-09-04'
 
 # 저장 변수
-targetPath = "PROJECT/DATA/LIST/"
+targetPath = "PROJECT/CRAWLING/YEOGI/"
 link_filename = '여기어때_link.txt'
 
 # URL
