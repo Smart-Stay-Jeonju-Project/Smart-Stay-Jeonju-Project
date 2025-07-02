@@ -134,7 +134,7 @@ def get_review_details(driver, links):
     reviews = []
     all_reviews = []
     link_num = 0
-    for link in links[:] :
+    for link in links[1:] :
         link_num += 1
         driver.get(link)
         time.sleep(4)
