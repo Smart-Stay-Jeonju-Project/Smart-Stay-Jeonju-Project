@@ -70,11 +70,11 @@ def review_count(review, name, page_num, link_num) :
     print(review_post)
     return review_post
 
-def all_save_reviews(all_review) :
+def all_save_reviews(all_review, num) :
     if not all_review :
         print("저장할 리뷰가 없습니다")
-    
-    filename = "yeogi_all_reviews.csv"
+    print(num)
+    filename = f"yeogi_all_reviews_{num:03d}.csv"
     fullPath = savetargetPath + filename
     df = pd.DataFrame(all_review)
 
@@ -87,14 +87,11 @@ def all_save_reviews(all_review) :
     else :
         df.to_csv(fullPath, mode='w', encoding='utf-8-sig', index=False, header=True)
 
-def save_reviews(reviews) :
-
+def save_reviews(reviews, num) :
     if not reviews :
         print("저장할 리뷰가 없습니다")
-    
-    filename = 'yeogi_reviews.csv'
+    filename = f"{num:03d}_yeogi_reviews.csv"
     fullPath = savetargetPath + filename
-
     existing = set()
 
     if os.path.exists(fullPath) :
@@ -124,7 +121,7 @@ def get_review_details(driver, links):
     all_reviews = []
     link_num = 0
     for link in links[:] :
-        link_num = len(link)
+        link_num += 1
         driver.get(link)
         time.sleep(4)
         soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -133,9 +130,13 @@ def get_review_details(driver, links):
         search_tag = soup.select('div.css-1bjv6bx')     # <class 'bs4.element.ResultSet'>
 
         # 리뷰 페이지 수 구하기
-        rating_count = soup.select_one('span.css-1294han').text[:3]
+        rating_count = soup.select_one('span.css-1294han').text
         if rating_count :
-            rating_count = int(rating_count)
+            rating_count = rating_count.replace(',','')
+            rating_count = [ int(rating) for rating in rating_count if rating.isdigit() ]
+            rating_count = int(''.join(map(str, rating_count)))
+        print(rating_count)
+        
         review_page = round (rating_count / 5)
         print(f"총 리뷰 페이지 : {review_page}")
         try :
@@ -150,7 +151,7 @@ def get_review_details(driver, links):
                     all_reviews.append(post)
                 try :
                     if len(reviews) >= 30 :
-                        save_reviews(reviews)
+                        save_reviews(reviews,link_num)
                         reviews = []
                     count += 1
                     if count % 5 == 1 :
@@ -174,12 +175,16 @@ def get_review_details(driver, links):
                         print(f"{count} 페이지로 이동합니다")
                         time.sleep(7.5)
                 except Exception as e :
+                    all_save_reviews(all_reviews, link_num)
                     print("다음 페이지로 이동 실패", e)
-                    return all_reviews
+                    print("다음 숙소 리뷰를 수집하겠습니다")
+                    continue
         except Exception as e :
+            all_save_reviews(all_reviews, link_num)
             print("버튼 클릭 실패 :", e)
-            return all_reviews
-    
+            print("다음 숙소 리뷰를 수집하겠습니다")
+            continue
+    all_save_reviews(all_reviews, link_num)
 
 def main():
     driver = initialze_driver()
