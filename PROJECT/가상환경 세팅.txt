@@ -1,4 +1,16 @@
-# 1. 가상환경 생성
+# 가상환경 생성
+# 시간 오래 걸려요....
+
+방식 1. 가상 환경 생성을 environment.yml 파일 실행하여 만들기
+# conda env create -n azen -f environment.yml
+
+
+
+방식 2. 터미널에서 가상 환경 만들기
+
+conda deactivate
+
+-> 가상환경이 아무것도 실행되지 않고 있는 상태에서
 conda create -n azen python=3.10 -y
 
 conda activate azen
