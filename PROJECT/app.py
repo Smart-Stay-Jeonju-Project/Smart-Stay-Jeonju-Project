@@ -8,7 +8,7 @@ def create_app() :
     app.register_blueprint(result.bp)
     app.register_blueprint(search.bp)
 
-    @app.route('/main')
+    @app.route('/')
     def home() :
         return render_template('main.html')
 
