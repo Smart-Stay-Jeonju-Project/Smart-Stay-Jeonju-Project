@@ -78,12 +78,6 @@ def get_accommodation_details(driver, links):
             address = soup.select_one('span.css-1t5t2dt').text
         except Exception as e :
             print(f"상세주소를 가져오지 못했습니다.\n에러메세지 : {e}")
-        # try :
-        #     feature = soup.select_one('#__next > div > main > section.css-g9w49m > div.css-2nct5r > div.css-1l5zsyb > div.mobile\:px-Spacing20 > section:nth-child(5) > div > ul > li > p').text
-        #     feature = feature.replace("• ", '')
-        # except Exception as e :
-        #     print("주소에 대한 부가정보를 가져오지 못했습니다. 없음으로 저장하겠습니다")
-        #     feature = ''
         
         post = {'name':name, 'category':category, 'ratring_score':rating_score, 'rating_count':rating_count, 'address':address 
                 # , 'feature' : feature

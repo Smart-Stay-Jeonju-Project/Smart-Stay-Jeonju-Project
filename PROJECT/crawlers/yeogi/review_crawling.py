@@ -123,13 +123,13 @@ def get_review_details(driver, links):
     reviews = []
     all_reviews = []
     link_num = 0
-    for link in links[1:] :
+    for link in links[:] :
         link_num = len(link)
         driver.get(link)
         time.sleep(4)
         soup = BeautifulSoup(driver.page_source, 'html.parser')
         name = soup.select_one('h1.css-17we8hh').text.strip()
-
+        print(f"{name} 리뷰를 수집하겠습니다...")
         search_tag = soup.select('div.css-1bjv6bx')     # <class 'bs4.element.ResultSet'>
 
         # 리뷰 페이지 수 구하기
@@ -179,6 +179,7 @@ def get_review_details(driver, links):
         except Exception as e :
             print("버튼 클릭 실패 :", e)
             return all_reviews
+    
 
 def main():
     driver = initialze_driver()
@@ -191,7 +192,6 @@ def main():
 
     print("링크를 수집하였습니다\n리뷰 수집하겠습니다\n...")
     all_reviews = get_review_details(driver, links)
-    all_reviews = [ item for item in all_reviews ]
     try :
         all_save_reviews(all_reviews)
         print(f"{len(all_reviews)} 건이 저장되었습니다")
