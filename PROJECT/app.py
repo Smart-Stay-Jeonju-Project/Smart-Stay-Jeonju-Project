@@ -1,15 +1,17 @@
 from flask import Flask, render_template
 from views import main, result, search
+import os, config
 
 def create_app() :
     app = Flask(__name__)
 
+    app.secret_key = config.SECRET_KEY
     app.register_blueprint(main.bp)
     app.register_blueprint(result.bp)
     app.register_blueprint(search.bp)
 
     @app.route('/')
-    def home() :
+    def root() :
         return render_template('main.html')
 
     return app
