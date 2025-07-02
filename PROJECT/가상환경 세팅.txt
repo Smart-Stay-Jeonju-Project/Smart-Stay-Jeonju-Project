@@ -1,0 +1,11 @@
+# 1. 가상환경 생성
+conda create -n azen python=3.10 -y
+
+conda activate azen
+
+conda install -c conda-forge jpype1 pandas matplotlib openpyxl notebook scikit-learn nltk tqdm wordcloud -y
+
+pip install flask jinja2 gunicorn pymysql beautifulsoup4 selenium webdriver-manager requests lxml html5lib konlpy
+
+# 주피터에서 azen 커널 등록 (azen 선택된 상태에서 터미널에 입력)
+python -m ipykernel install --user --name=azen
