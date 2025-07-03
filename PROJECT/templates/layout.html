@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    </head>
+    <body>
+        <!-- 로고 -->
+        <p><img src="{{url_for('static', filename='/images/logo.jpg')}}" height="100" width="100"></p>
+        <!-- 제목 -->
+        <h2> 전주 어때 </h2>
+        <!-- 검색 메뉴 -->
+        <form action="{{url_for('main.search')}}" method="get">
+            <div class="">
+                <label for="search_type" class="form-label">검색 메뉴</label>
+                <select name="search_type" id="search_type" class="">
+                    <option value="name" {% if search_type == 'name' %}selected{% endif %}>상호명</option>
+                    <option value="keyword" {% if search_type == 'keyword' %}selected{% endif %}>키워드</option>
+                    <option value="address" {% if search_type == 'address' %}selected{% endif %}>주소</option>
+                    <option value="sentence" {% if search_type == 'sentence' %}selected{% endif %}>문장</option>
+                </select>
+            </div>
+            <!-- 검색바 -->
+            <div class="">
+                <label for="search_term" class="">검색어 입력</label>
+                <input type="text" name="search_term" id="search_term" class="" placeholder="검색어를 입력하세요" maxlength="255" 
+                value="{{ search_term | default('') }}" required>
+            </div>
+            <!-- 검색버튼 -->
+            <div class="">
+                <button type="submit" class="btn btn-primary">검색</button>
+            </div>
+        </form>
+        <script src="{{ url_for('static', filename='js/layout_search.js') }}"></script>
+        {% block contents %}{% endblock %}
+        <!-- 맨위로 버튼 -->
+        <footer>
+            <a href="#" role="button" class="SettingView-module__btn_setting___Z_3Uu SettingView-module__type_top___GkN8V" aria-pressed="false"><span class="blind">맨 위로 이동</span></a>
+        </footer>
+    </body>
+</html>

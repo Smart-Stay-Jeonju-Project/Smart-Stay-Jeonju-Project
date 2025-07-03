@@ -11,7 +11,7 @@ targetPath = "DATA/RAW/LINKS/"
 savetargetPath = "DATA/RAW/REVIEWS/"
 File_Suffix = 'yeogi_link.txt'
 print("현재 작업 경로:", os.getcwd())
-review_id = 'yeogi_accom'
+review_id = 'y'
 
 # 웹 드라이버 객체 생성
 def initialze_driver():
@@ -36,15 +36,14 @@ def load_links_from_file(fullPath):
 
 number = 0
 
-def review_count(review, name, page_num, link_num) :
-    global number
-    number += 1
+def review_count(review, name, page_num, link_num, number) :
     import re
     try :
-        time.sleep(3)
-        content_tag = review.select_one('div.css-1tof81b > p')
+        content_tag = review.select_one('div.css-23goey > div > p')
         if content_tag :
             content = re.sub(r"[^ㄱ-ㅎㅏ-ㅣ-가-힣0-9 ]", "", content_tag.get_text().strip())
+        else :
+            content = ""
     except Exception as e :
         print(f"현재 리뷰 페이지 : {page_num}")
         print(f"리뷰내용을 가져오지 못했습니다.\n에러메세지 : {e}")
@@ -60,13 +59,13 @@ def review_count(review, name, page_num, link_num) :
     except Exception as e :
         full = 0
     try :
-        harf = 0.5 if review._find("svg.css-19sk4h4") else 0
+        harf = 0.5 if review.find("svg.css-19sk4h4") else 0
     except Exception as e :
         harf = 0
     link_num = int(link_num)
     rating = full + harf
     review_id_name = f"{review_id}_{link_num:03d}_{number:03d}"
-    review_post = {'id': review_id_name,'name':name, 'review_content':content, 'rating':rating, 'write_date':write_date }
+    review_post = {'id': review_id_name, 'name': name, 'review_content':content, 'rating':rating, 'write_date':write_date }
     print(review_post)
     return review_post
 
@@ -120,6 +119,7 @@ def get_review_details(driver, links):
     reviews = []
     all_reviews = []
     link_num = 0
+    number = 0
     for link in links[:] :
         link_num += 1
         driver.get(link)
@@ -143,10 +143,11 @@ def get_review_details(driver, links):
             count = 1
             for page_num in range(1, review_page + 1) :
                 soup = BeautifulSoup(driver.page_source, 'html.parser')
-                search_tag = soup.select('div.css-1bjv6bx')
-                time.sleep(5)
+                search_tag = soup.select('div.css-k4n5rw')
+                time.sleep(3)
                 for review in search_tag :
-                    post = review_count(review, name, page_num, link_num)
+                    number += 1
+                    post = review_count(review, name, page_num, link_num, number)
                     reviews.append(post)
                     all_reviews.append(post)
                 try :
@@ -162,7 +163,7 @@ def get_review_details(driver, links):
                         time.sleep(5)
                         driver.execute_script("arguments[0].click();",next_btn)
                         print(f"다음 {count} 페이지로 이동합니다")
-                        time.sleep(7.5)
+                        time.sleep(5.5)
                     else :
                         now_btn = 'button.css-1rpwxx7'
                         next_btn = now_btn + ' + button.css-1v52o0s'
@@ -173,7 +174,7 @@ def get_review_details(driver, links):
                         time.sleep(4)
                         driver.execute_script("arguments[0].click();",next_page)
                         print(f"{count} 페이지로 이동합니다")
-                        time.sleep(7.5)
+                        time.sleep(5.5)
                 except Exception as e :
                     all_save_reviews(all_reviews, link_num)
                     print("다음 페이지로 이동 실패", e)
