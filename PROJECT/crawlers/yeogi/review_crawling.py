@@ -180,6 +180,7 @@ def get_review_details(driver, links):
                     print("다음 페이지로 이동 실패", e)
                     print("다음 숙소 리뷰를 수집하겠습니다")
                     continue
+                save_reviews(reviews,link_num)
         except Exception as e :
             all_save_reviews(all_reviews, link_num)
             print("버튼 클릭 실패 :", e)
