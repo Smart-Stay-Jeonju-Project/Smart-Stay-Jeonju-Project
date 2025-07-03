@@ -2,33 +2,32 @@
 
 {% block title %}검색결과 페이지{% endblock %}
 
-{% block keyword_title %}
-    {% if search_type == 'keyword' %}
-        <strong>선택하신 키워드 :</strong>
+{% if search_type == 'keyword' %}
+    <strong>선택하신 키워드 :</strong>
+    <ul>
+        {% for keyword in selected_keywords %}
+        <li>{{ keyword }}</li>
+        {% endfor %}
+    </ul>
+    <ul id="keywordUl">
+        {% for keyword in keyword_list %}
+        <li><a href="{{ url_for('main.search') }}?search_type=keyword&search_term={{ keyword }}">{{ keyword }}</a></li>
+        {% endfor %}
+    </ul>
     {% else %}
-        <strong>키워드를 선택하세요 :</strong>
-    {% endif %}
-{% endblock %}
+    <strong>키워드를 선택하세요 :</strong>
+    <ul>
+        {% for keyword in keyword_list %}
+        <li><a href="{{ url_for('main.search') }}?search_type=keyword&search_term={{ keyword }}">{{ keyword }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}
 {% block contents %}
-    <!-- 키워드 재 선택할 수 있는 -->
-    {% if search_type == 'keyword' %}
-    <div id="keywordList" style="margin-top: 20px;">
-        <strong>다른 키워드를 선택하세요 :</strong>
-        <ul>
-            {% for keyword in keyword_list %}
-                <li>
-                    <a href="{{ url_for('main.search') }}?search_type=keyword&search_term={{ keyword }}">
-                        {{ keyword }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
     <!-- Flask에서 넘어온 데이터를 전역 변수로 선언 -->
     <!-- 데이터는 잘 넘어와서 빨간줄 무시 -->
     <script>
         window.accommodations = {{ accommodations | tojson | safe }};
+        // console.log(window.allKeywords)
     </script>
     <!-- main.js에서 지도 정보 가져오기 -->
     <script src="{{ url_for('static', filename='js/search_maps.js') }}"></script>
@@ -40,14 +39,8 @@
     <script>
         const searchTerm = "{{ search_term }}";  // Flask에서 넘긴 검색어를 JS 변수로 사용
     </script>
-    <script src="{{ url_for('static', filename='js/search_maps.js') }}"></script>
     <p>{{ result }}</p>
     <!-- 지도 보여줄 구역 지정 -->
     <div id="map" style="height: 600px;"></div>
-    <form action="{{ url_for('result.on_result') }}" method="get">
-        검색결과 페이지 기능들
-        <input type="hidden" name="search_type" value="{{ search_type }}">
-        <input type="hidden" name="search_term" value="{{ search_term }}">
-        <button type="submit">상세 페이지로 이동</button>
-    </form>
+    <!-- <div id="map" style="height: 600px; width : 70%; float : right;"></div> -->
 {% endblock %}

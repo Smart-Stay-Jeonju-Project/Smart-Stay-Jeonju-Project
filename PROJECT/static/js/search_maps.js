@@ -2,11 +2,12 @@
 
 // 다중마커
 function initMap () {
+    // accommodations 객체에서 새로운 속성들을 받아오도록 구조 분해 할당을 수정합니다.
     const accommodations = window.accommodations || [];
     const map = new google.maps.Map(document.getElementById("map"), {
         // 전주시 중심 좌표
-        center: { lat: 35.85, lng: 127.13 }, 
-        // 지도 확대 크기 
+        center: { lat: 35.85, lng: 127.13 },
+        // 지도 확대 크기
         zoom: 13,
     });
 
@@ -15,7 +16,10 @@ function initMap () {
     // (ㄱ.클릭시 정보 제공)
     const infowindow = new google.maps.InfoWindow();
 
-    accommodations.forEach(({ name, address, lat, lng }) => {
+    accommodations.forEach(({ name, address, lat, lng, image_url, rating_score, rating_count }) => {
+        // console.log("현재 숙소 정보 (평점 포함): ", { name, address, lat, lng, image_url, 
+        // rating_score, rating_count });
+
         const marker = new google.maps.Marker({
             position : { lat, lng },
             map,
@@ -26,8 +30,18 @@ function initMap () {
         marker.addListener("click", () => {
             // 마커 클릭시 지도 중심 이동
             map.panTo(marker.position);
-            // JavaScript에서 템플릿 문자열을 만드는 문법
-            infowindow.setContent(`<strong>${name}</strong><br><strong>${address}</strong>`);
+
+            // 정보창 content에 평점과 리뷰 수를 추가합니다.
+            const content = `
+                <div style="max-width: 200px;">
+                    <a href="/result?name=${encodeURIComponent(name)}" style="text-decoration: none; color: black;">
+                        <img src="${image_url}" alt="${name}" style="width: 100%; height: auto; border-radius: 8px;">
+                        <p><strong>${name}</strong>⭐${rating_score} (${rating_count})
+                        <br>${address}</p>
+                    </a>
+                </div>
+            `;
+            infowindow.setContent(content);
             infowindow.open({
                 anchor: marker,
                 map,

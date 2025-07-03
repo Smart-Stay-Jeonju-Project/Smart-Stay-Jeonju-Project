@@ -1,14 +1,21 @@
 from flask import Blueprint, render_template, request, redirect, flash, url_for
 import pandas as pd
 import os
+from utils.filename import get_image_url
 
 bp = Blueprint('main', __name__, url_prefix='/')
+
+@bp.route('/')
+def main():
+    keyword_list = load_keywords()
+    return render_template('main.html', keyword_list=keyword_list)
 
 # 키워드 목록들
 def load_keywords():
     csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
     try:
         df = pd.read_csv(csv_path, encoding='utf-8')
+        
         df['keyword'] = df['keyword'].astype(str).str.strip()
 
         keywords = set()
@@ -19,113 +26,98 @@ def load_keywords():
                 part = part.strip()
                 if not part:
                     continue
-
-                # 공백 제거한 키워드로 저장
                 keywords.add(part.replace(" ", ""))
 
         return sorted(keywords)
-    except:
+    except Exception as e:
         return []
-
-# 키워드 목록들을 불러오는
-@bp.route('/')
-def home():
-    keyword_list = load_keywords()
-    return render_template('layout.html', keyword_list=keyword_list)
 
 # 검색타입 선택에 따른 기능들
 @bp.route('/search', methods=['GET'])
 def search():
     search_type = request.args.get('search_type', '').strip()
     search_term = request.args.get('search_term', '').strip()
-    print("search_type : ", search_type)
-    print("search_term : ", search_term)
+    # print("search_type : ", search_type)
+    # print("search_term : ", search_term)
 
+    # csv 파일 경로
     csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
 
     try:
+        # CSV 파일에서 필요한 컬럼들을 모두 읽어옵니다.
+        # 'rating_score'와 'rating_count' 추가
         df = pd.read_csv(csv_path, encoding='utf-8')
         df['name'] = df['name'].astype(str).str.strip()
         df['address'] = df['address'].astype(str).str.strip()
+        # rating_score는 실수 타입으로
+        df['rating_score'] = df['rating_score'].astype(float)
+        # rating_count 
+        # 문자열로 변환 후 따옴표와 쉼표 제거
+        df['rating_count'] = df['rating_count'].astype(str).str.replace('"', '').str.replace(',', '')
+        # 숫자로 강제 변환 시도 (errors='coerce'로 변환 실패 시 NaN으로)
+        df['rating_count'] = pd.to_numeric(df['rating_count'], errors='coerce')
+        # NaN 값은 0으로 채우거나 적절한 기본값으로 채운 후 정수로 변환
+        df['rating_count'] = df['rating_count'].fillna(0).astype(int) # NaN은 0으로 채우고 정수로
 
-        # 상호명 검색 (2글자 이상 포함)
-        if search_type == 'name' :
+        filtered_df = pd.DataFrame()
+
+        # 선택 타입 : 상호명
+        if search_type == 'name':
             if len(search_term) < 2:
                 flash("검색어는 2글자 이상 입력해주세요.", "error")
                 return redirect('/')
-            # 이름 컬럼이 NaN이 아닌 값으로만 구하는 필터
+            # 2글자 이상 단어 포함하면 검색 되게 하는
             df['name'] = df['name'].astype(str).fillna('').str.strip()
-            # 검색 하는
-            # case=False : 대소문자 구분X, na=False : NaN도 False로 처리
             filtered_df = df[df['name'].str.contains(search_term, case=False, na=False, regex=False)]
-            #검색 결과 체크 해보는
-            print("contains : \n",filtered_df[['name']])
-            if not filtered_df.empty:
-                results = filtered_df.to_dict(orient='records')
-                print(filtered_df,results)
-                return render_template(
-                    'search.html',
-                    results=results,
-                    search_type=search_type,
-                    search_term=search_term,
-                    accommodations=results, 
-                    keyword_list=load_keywords(),
-                    result=f"검색 결과 {len(results)}건"
-                )
-            else :
-                flash("일치하는 자료가 없습니다. 다시 검색해주세요.", "error")
-                return redirect('/')
 
-        # 키워드 검색
+        # 선택 타입 : 키워드
         elif search_type == 'keyword':
             df['keyword'] = df['keyword'].astype(str).fillna('').str.strip()
-            
-            # keyword 컬럼 내 쉼표로 구분된 키워드 각각에 대해 검색
             word = df['keyword'].apply(lambda x: any(search_term == k.strip().replace(" ", "") for k in x.split(',')))
-
             filtered_df = df[word]
-            
-            if not filtered_df.empty:
-                results = filtered_df.to_dict(orient='records')
-                return render_template(
-                    'search.html',
-                    results=results,
-                    search_type=search_type,
-                    search_term=search_term,
-                    accommodations=results,
-                    keyword_list=[search_term],
-                    result=f"'{search_term}' 키워드 검색 결과 {len(results)}건"
-                )
-            else:
-                flash("해당 키워드에 해당하는 자료가 없습니다.", "error")
-                return redirect('/')
-            
-        # 주소 검색 (덕진구, 완산구 요청)
-        # 직접 주소 입력, 전주시만 검색 등 다른 요소 추가
-        elif search_type == 'address' :
+
+        # 선택 타입 : 주소
+        elif search_type == 'address':
             if search_term not in ['덕진구', '완산구']:
                 flash("주소를 정확히 선택해주세요.", "error")
                 return redirect('/')
-            # 주소 컬럼에 선택한 구 이름 포함 여부 필터링
+            # 덕진구, 완산구를 검색했을 때 검색 되게
             filtered_df = df[df['address'].str.contains(search_term, case=False, na=False, regex=False)]
-            # print(filtered_df[['address']])
-            if not filtered_df.empty:
-                results = filtered_df.to_dict(orient='records')
-                return render_template(
-                    'search.html',
-                    results=results,
-                    search_type=search_type,
-                    search_term=search_term,
-                    accommodations=results,
-                    keyword_list=load_keywords(),
-                    result=f"검색 결과 {len(results)}건"
-                )
-            else:
-                flash("해당 주소에 일치하는 자료가 없습니다.", "error")
-                return redirect('/')
         else:
             flash("지원하지 않는 검색 유형입니다.", "error")
             return redirect('/')
+
+        # 검색 결과가 있는 경우에만 image_url을 추가하고 템플릿 렌더링
+        if not filtered_df.empty:
+            results = filtered_df.to_dict(orient='records')
+            # 여기서 image_url을 각 결과에 추가 
+            for row in results: # filtered_df가 아닌 results에 추가
+                row['image_url'] = get_image_url(row['name'])
+                # rating_score 포맷팅
+                row['rating_score']
+                # rating_count 포맷팅
+                if row['rating_count'] < 1000:
+                    row['formatted_rating_count'] = str(row['rating_count'])
+                else:
+                    row['formatted_rating_count'] = f"{row['rating_count']:,}"
+
+            # 키워드 검색일 때 selected_keywords
+            selected_keywords = [search_term] if search_type == 'keyword' else []
+
+            return render_template(
+                'search.html',
+                results=results, # results를 보내줍니다.
+                search_type=search_type,
+                search_term=search_term,
+                accommodations=results, # accommodations로도 results를 보냅니다.
+                keyword_list=load_keywords(), # 모든 키워드 리스트
+                selected_keywords=selected_keywords,
+                result=f"'{search_term}' 검색 결과 {len(results)}건"
+            )
+        else:
+            flash("일치하는 자료가 없습니다. 다시 검색해주세요.", "error")
+            return redirect('/')
+
     except FileNotFoundError:
         flash("데이터 파일을 찾을 수 없습니다.", "error")
         return redirect('/')

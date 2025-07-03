@@ -8,9 +8,17 @@
     </head>
     <body>
         <!-- 로고 -->
-        <p><img src="{{url_for('static', filename='/images/logo.jpg')}}" height="100" width="100"></p>
+        <p>
+            <a href="{{ url_for('main.main') }}">
+                <img src="{{url_for('static', filename='/images/logo.jpg')}}" height="100" width="100">
+            </a>
+        </p>
         <!-- 제목 -->
-        <h2> 전주 어때 </h2>
+        <p>
+            <a href="{{ url_for('main.main') }}">
+                <h2> 전주 어때 </h2>
+            </a>
+        </p>
         <!-- 검색 메뉴 -->
         <form action="{{url_for('main.search')}}" method="get">
             <div class="">
@@ -25,7 +33,7 @@
                     {% block keyword_title %}
                     <strong>키워드를 선택하세요 : </strong>
                     {% endblock %}
-                    <ul>
+                    <ul id="keywordUI">
                         {% for keyword in keyword_list %}
                         <li>
                             <a href="{{ url_for('main.search') }}?search_type=keyword&search_term={{ keyword }}">
@@ -69,7 +77,8 @@
         {% block contents %}{% endblock %}
         <!-- 맨위로 버튼 -->
         <footer>
-            <a href="#" role="button" class="SettingView-module__btn_setting___Z_3Uu SettingView-module__type_top___GkN8V" aria-pressed="false"><span class="blind">맨 위로 이동</span></a>
+            <button id="scrollTopBtn" title="맨 위로 이동">&#8679;</button>
+            <script src="{{ url_for('static', filename='js/upbtn.js') }}"></script>
         </footer>
     </body>
 </html>
