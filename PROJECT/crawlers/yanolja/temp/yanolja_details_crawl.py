@@ -48,7 +48,7 @@ def get_accommodation_details(driver):
         detail_list = soup.select("a > div.grid.w-full.grid-cols-\[126px_1fr\].gap-\[12px\]")
 
         if detail_list :
-            print("상세 정보를 찾았습니다")
+            print("숙소검색 페이지를 로드했습니다")
         else :      # 스크롤 했지만, 목록이 더 생기지 않음
             print("검색 결과가 없습니다")
             exit() 
