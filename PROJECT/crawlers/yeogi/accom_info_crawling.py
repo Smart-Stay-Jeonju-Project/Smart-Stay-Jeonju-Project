@@ -11,9 +11,6 @@ File_Suffix = 'yeogi_link.txt'
 print("현재 작업 경로:", os.getcwd())
 
 fullPath = targetPath + File_Suffix
-# 경로와 파일이름을 병합하여, 파일을 읽어올 경로를 지정
-# fullPath = targetPath + File_Suffix
-# 파일에서 불러온 URL의 리스트
 
 # 웹 드라이버 객체 생성
 def initialze_driver():
@@ -35,16 +32,6 @@ def load_links_from_file(fullPath):
     except Exception as e :
         print("파일을 불러오는 데 실패했습니다. error:", e)
 
-
-# def load_info() :
-#     filename = "숙소상세정보.csv"
-#     fullPath = targetPath + filename
-#     df = pd.read_csv(fullPath)
-#     new_df = df.drop_duplicates(['name'], keep='first')
-#     filename = "숙소상세정보(중복제거).csv"
-#     fullPath = targetPath + filename
-#     new_df.to_csv(f"{fullPath}", index=False, encoding='utf-8-sig',header=False)
-#     return new_df
 
 # 키워드로 검색된 숙소의 상세 정보를 가져오기
 def get_accommodation_details(driver, links):
@@ -91,6 +78,7 @@ def get_accommodation_details(driver, links):
                 posts = []
             else :
                 print("중간저장 하지 못했습니다")
+        save_info(posts)
     save_info(all_posts)
 
 
@@ -99,13 +87,6 @@ def save_info(all_info) :
         filename = "yeogi_info.csv"
         fullPath = targetPath + filename
         df = pd.DataFrame(all_info)
-        # try :
-        #     df.to_csv(f"{fullPath}", mode='a',index=False, encoding='utf-8-sig',header=False)
-        #     print(f"{len(all_info)}개의 숙소의 상세 정보를 저장했습니다")
-        #     return True
-        # except Exception as e :
-        #     print(f"숙소의 상세 정보를 저장하지 못했습니다 {e}")
-        #     return False
         if os.path.exists(fullPath) :
             df.to_csv(f"{fullPath}", mode='a',index=False, encoding='utf-8-sig',header=False)
             return True
