@@ -22,7 +22,7 @@
         <!-- 검색 메뉴 -->
         <form action="{{url_for('main.search')}}" method="get">
             <div class="">
-                <label for="search_type" class="form-label">검색 메뉴</label>
+                <label for="search_type" class="form_label">검색 메뉴</label>
                 <select name="search_type" id="search_type" class="">
                     <option value="name" {% if search_type == 'name' %}selected{% endif %}>상호명</option>
                     <option value="keyword" {% if search_type == 'keyword' %}selected{% endif %}>키워드</option>
@@ -37,8 +37,11 @@
                     <ul id="keywordUI">
                         {% for keyword in keyword_list %}
                         <li>
-                            <a href="{{ url_for('main.search') }}?search_type=keyword&search_term={{ keyword }}">
-                            {{ keyword }}
+                            <a href="{{ url_for('main.search') }}?search_type=keyword&search_term={{ keyword }}"
+                                {% if keyword == search_term %}
+                                    style="background-color: #ffdddd; font-weight: bold; color: red;"
+                                {% endif %}>
+                                {{ keyword }}
                             </a>
                         </li>
                         {% endfor %}
@@ -54,21 +57,21 @@
                 </div>
             </div>
             <!-- 검색바 -->
-            <div class="">
+            <div class="autocomplete_wrapper" id="autocomplete_wrapper">
                 <label for="search_term" class="">검색어 입력</label>
                 <input type="text" name="search_term" id="search_term" class="" placeholder="검색어를 입력하세요" maxlength="255" 
-                value="{{ search_term | default('') }}" required>
+                 value="{{ search_term | default('') }}" required>
             </div>
             <!-- 검색버튼 -->
             <div class="">
-                <button type="submit" class="btn btn-primary">검색</button>
+                <button type="submit" class="btn btn_primary">검색</button>
             </div>
         </form>
         <div class="container">
         {# flash에 저장된 내용을 출력 #}
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <ul class="flash-messages">
+                <ul class="flash_messages">
                     {% for category, message in messages %}
                     <li class="{{category}}" >{{message}}</li>
                     {% endfor %}
@@ -82,5 +85,6 @@
             <button id="scrollTopBtn" title="맨 위로 이동">&#8679;</button>
             <script src="{{ url_for('static', filename='js/upbtn.js') }}"></script>
         </footer>
+        <script src="{{ url_for('static', filename='js/autocomplete.js') }}"></script>
     </body>
 </html>

@@ -12,8 +12,7 @@ def create_app() :
 
     @app.route('/')
     def root() :
-        return render_template('main.html')
-
+        return render_template('main.html')    
     return app
 
 if __name__ == "__main__" : 

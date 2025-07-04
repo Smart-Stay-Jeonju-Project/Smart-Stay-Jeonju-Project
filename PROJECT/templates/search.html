@@ -14,7 +14,7 @@
         <li><a href="{{ url_for('main.search') }}?search_type=keyword&search_term={{ keyword }}">{{ keyword }}</a></li>
         {% endfor %}
     </ul>
-    {% else %}
+{% else %}
     <strong>키워드를 선택하세요 :</strong>
     <ul>
         {% for keyword in keyword_list %}

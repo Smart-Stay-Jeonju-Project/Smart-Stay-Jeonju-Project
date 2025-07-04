@@ -8,7 +8,7 @@
     <div class="category-list">
         {% for cat in ['호텔', '모텔', '펜션'] %}
             <a href="{{ url_for('main.main', category=cat) }}"
-            class="category-item {% if selected_category == cat %} selected {% endif %}">
+            class="category_item {% if selected_category == cat %} selected {% endif %}">
                 {{ cat }}
             </a>
         {% endfor %}

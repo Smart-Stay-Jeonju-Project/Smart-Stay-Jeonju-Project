@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, flash, url_for
+from flask import Blueprint, render_template, request, redirect, flash, jsonify
 import pandas as pd
 import os
 from utils.filename import get_image_url
@@ -164,3 +164,33 @@ def search():
     except FileNotFoundError:
         flash("데이터 파일을 찾을 수 없습니다.", "error")
         return redirect('/')
+
+# 자동완성 검색기능
+@bp.route('/autocomplete', methods=['GET'])
+def autocomplete():
+    search_type = request.args.get('search_type', '')
+    term = request.args.get('term', '').strip().lower().replace('-', '').replace(' ', '')
+
+    suggestions = []
+    csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
+
+    try:
+        df = pd.read_csv(csv_path, encoding='utf-8')
+        df['name'] = df['name'].astype(str).fillna('').str.strip()
+        if search_type == 'name':
+            for name in df['name']:
+                name_lower = name.lower().replace('-', '').replace(' ', '')
+
+                # 단어별 검색을 위해 원래 단어 기준도 따로 보존
+                words = name.lower().replace('-', ' ').split()
+
+                # 각 단어도 공백, '-' 제거 후 비교
+                normalized_words = [w.replace(' ', '') for w in words]
+
+                if (name_lower.startswith(term) or                          # 전체 이름이 term으로 시작
+                    any(w.startswith(term) for w in normalized_words)):     # 단어 중 하나라도 term으로 시작
+                    suggestions.append(name)
+
+        return jsonify(sorted(set(suggestions))[:5])    # 인덱스 0-4까지만 출력
+    except Exception as e:
+        print(e)
