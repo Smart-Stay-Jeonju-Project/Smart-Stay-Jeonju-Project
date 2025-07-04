@@ -57,7 +57,12 @@ def get_accommodation_details(driver, links):
             print(f"평점을 가져오지 못했습니다.\n에러메세지 : {e}")
             rating_score = 0
         try :
-            rating_count = soup.select_one('span.css-1294han').text[:3]
+            rating_count = soup.select_one('span.css-1294han').text
+            # if rating_count :
+            #     rating_count = rating_count.replace(',','')
+            #     rating_count = [ int(rating) for rating in rating_count if rating.isdigit() ]
+            #     rating_count = int(''.join(map(str, rating_count)))
+            print(rating_count)
         except Exception as e :
             print(f"평가수를 가져오지 못했습니다.\n에러메세지 : {e}")
             rating_count = 0
