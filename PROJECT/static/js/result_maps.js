@@ -1,3 +1,5 @@
+// result.html 에서 단일 마커 지도 표시
+
 // 단일 마커 (손 더 봐야함)
 function initMap() {
     // 좌표 설정
