@@ -39,6 +39,15 @@ number = 0
 def review_count(review, name, page_num, number) :
     import re
     try :
+        nickname_tag = review.select_one('div.css-1bh2qmi > div > p')
+        if nickname_tag :
+            nickname = nickname_tag.get_text()
+        else :
+            nickname = ""
+    except Exception as e :
+        print(f"닉네임을 가져오지 못했습니다.\n에러메세지 : {e}")
+        nickname = ""
+    try :
         content_tag = review.select_one('div.css-23goey > div > p')
         if content_tag :
             #content = re.sub(r"[^ㄱ-ㅎㅏ-ㅣ-가-힣0-9 ]", "", content_tag.get_text().strip())
@@ -68,7 +77,7 @@ def review_count(review, name, page_num, number) :
         harf = 0
     rating = full + harf
     review_id_name = f"{review_id}_{number:03d}"
-    review_post = {'id': review_id_name, 'name': name, 'review_content':content, 'rating':rating, 'write_date':write_date }
+    review_post = {'id': review_id_name, 'nickname':nickname, 'name': name, 'review_content':content, 'rating':rating, 'write_date':write_date }
     print(review_post)
     return review_post
 
@@ -115,7 +124,7 @@ def get_review_details(driver, links):
     all_reviews = []
     link_num = 0
     try :
-        for link in links[:6] :
+        for link in links[:] :
             link_num += 1
             reviews = []
             count = 1
@@ -141,7 +150,7 @@ def get_review_details(driver, links):
                 for page_num in range(1, review_page + 1) :
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
                     time.sleep(1)
-                    search_tag = soup.select('div.css-k4n5rw')
+                    search_tag = soup.select('div.css-xogpio')
                     time.sleep(1)
                     for review in search_tag :
                         number += 1
