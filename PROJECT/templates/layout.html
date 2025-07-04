@@ -86,5 +86,16 @@
             <script src="{{ url_for('static', filename='js/upbtn.js') }}"></script>
         </footer>
         <script src="{{ url_for('static', filename='js/autocomplete.js') }}"></script>
+        <!-- search_type 변경 시 검색어 초기화 되는 이벤트 리스너 -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const searchTypeSelect = document.getElementById("search_type");
+                const searchInput = document.getElementById("search_term");
+
+                searchTypeSelect.addEventListener("change", function () {
+                    searchInput.value = ""; // 검색어 초기화
+                });
+            });
+        </script>
     </body>
 </html>
