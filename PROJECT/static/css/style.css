@@ -45,7 +45,7 @@ input[type="text"] {
     background-color: #fff;
 }
 
-button {
+btn_btn-primary {
     width: 100%;
     padding: 0.75rem;
     font-size: 1.1rem;
@@ -151,3 +151,110 @@ a {
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
+
+.slider-btn {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    background-color: white;
+    border: none;
+    font-size: 2em;
+    cursor: pointer;
+    z-index: 10;
+}
+
+#prev_btn {
+    left: 5px;
+}
+
+#next_btn {
+    right: 5px;
+}
+
+label.category {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 15;
+    color: #555;
+}
+
+/* 슬라이더가 늘어날 수 있게 */
+.slider_track {
+    display: flex;
+    width: 100%;
+    transition: transform 0.5s ease;
+}
+
+/* 각 슬라이더 너비 고정 */
+.slider_card {
+    width: 25%; 
+    flex-shrink: 0;
+    box-sizing: border-box;
+    padding: 10px;
+    text-align: center;
+}
+
+.slider_container {
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    align-items: center;
+}
+
+/* 버튼 위치 조정 */
+.slider_btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background-color: rgba(255,255,255,0.9);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+/* 버튼 비활성화 시 스타일 */
+.slider_btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* 전체 슬라이더 감싸는 래퍼 */
+.slider_wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.slider_card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+h4 {
+    margin-left : 10px;
+}
+
+.category-list {
+    margin: 10px 0 20px 10px;
+}
+
+.category-item {
+    margin-right: 16px;
+    text-decoration: none;
+    color: black;
+    font-weight: normal;
+    font-size: 16px;
+    padding: 4px 8px;
+}
+
+.category-item.selected {
+    color: red;
+    font-weight: bold;
+    border-bottom: 2px solid red;
+}
+

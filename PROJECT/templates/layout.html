@@ -29,6 +29,7 @@
                     <option value="address" {% if search_type == 'address' %}selected{% endif %}>주소</option>
                     <option value="sentence" {% if search_type == 'sentence' %}selected{% endif %}>문장</option>
                 </select>
+                <!-- 키워드 선택 시 선택 가능한 키워드 표시 -->
                 <div id="keywordList" style="display: none; margin-top: 10px;">
                     {% block keyword_title %}
                     <strong>키워드를 선택하세요 : </strong>
@@ -44,6 +45,7 @@
                     </ul>
                 </div>
                 <script src="{{ url_for('static', filename='js/keyword_select.js') }}"></script>
+                <!-- 주소 선택 시 입력 받는 데이터 제한 -->
                 <div>
                     <p id="addressHint" style="color: red; display: none;">
                         ※ '덕진구' 또는 '완산구'를 입력해주세요.

@@ -7,15 +7,58 @@ bp = Blueprint('main', __name__, url_prefix='/')
 
 @bp.route('/')
 def main():
+    category = request.args.get('category', '호텔').strip() # 일단 기본값 호텔
+    accommodations = []
     keyword_list = load_keywords()
-    return render_template('main.html', keyword_list=keyword_list)
+
+    csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
+    
+    try:
+        df = pd.read_csv(csv_path, encoding='utf-8')
+        # 추천 숙소 리스트에 띄울 데이터들 정제
+        df['category'] = df['category'].astype(str).fillna('').str.strip()
+        df['name'] = df['name'].astype(str).fillna('').str.strip()
+        df['address'] = df['address'].astype(str).fillna('').str.strip()
+        df['rating_score'] = df['rating_score'].astype(float)
+        df['rating_count'] = (
+            df['rating_count']
+            .astype(str).str.replace('"', '').str.replace(',', '')
+            .pipe(pd.to_numeric, errors='coerce')
+            .fillna(0).astype(int)
+        )
+
+        # category 필터링
+        filtered_df = df[df['category'].str.contains(category, case=False, na=False)]
+
+        # 추천 숙소 데이터들
+        for _, row in filtered_df.iterrows():
+            accommodation = {
+                "name": row['name'],
+                "address": row['address'],
+                "rating_score": row['rating_score'],
+                "rating_count": row['rating_count'],
+                "formatted_rating_count": f"{row['rating_count']:,}" if row['rating_count'] >= 1000 else str(row['rating_count']),
+                "image_url": get_image_url(row['name'])
+            }
+            accommodations.append(accommodation)
+
+    except Exception as e:
+        print(e)
+
+    return render_template(
+        'main.html',
+        keyword_list=keyword_list,
+        accommodations=accommodations,
+        selected_category=category
+    )
+
 
 # 키워드 목록들
 def load_keywords():
     csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
     try:
         df = pd.read_csv(csv_path, encoding='utf-8')
-        
+
         df['keyword'] = df['keyword'].astype(str).str.strip()
 
         keywords = set()
