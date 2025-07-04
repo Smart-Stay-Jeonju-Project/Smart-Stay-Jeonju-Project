@@ -26,3 +26,5 @@ dependencies:
       - konlpy
       - wordcloud
       - gunicorn
+      - googlemaps
+      - geopy
