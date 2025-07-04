@@ -4,13 +4,11 @@
 
 {% block contents %}
     상세 페이지 기능들
-    <!-- main.js에서 지도 정보 가져오기 -->
-    <script src="{{ url_for('static', filename='js/result_maps.js') }}"></script>
-    <!-- Maps API 불러오기 -->
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg8UOceSAXDR2NnMikougMamOyAxbdRac&callback=initMap"
-        async defer>
-    </script>
+    <h2>{{ accommodation.name }}</h2>
+    <img src="{{ accommodation.image_url }}" alt="{{ accommodation.name }}" style="width:300px;">
+    <p>주소: {{ accommodation.address }}</p>
+    <p>평점: {{ accommodation.rating_score }}점</p>
+    <p>리뷰 수: {{ accommodation.rating_count }}개</p>
     <script>
         const searchTerm = "{{ search_term }}";  // Flask에서 넘긴 검색어를 JS 변수로 사용
     </script>
