@@ -299,3 +299,63 @@ h4 {
 #autocomplete_wrapper {
     position: relative;
 }
+
+
+
+/* 상세페이지 지도 영역 */
+#map-wrapper {
+    position: relative;
+    width: 100%;
+    height: 600px;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+#list-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 25%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.97);
+    overflow-y: auto;
+    padding: 10px;
+    z-index: 1000;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.accommodation-card {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    cursor : default;
+    transition: background-color 0.2s ease;
+}
+
+.accommodation-card img {
+    width: 70px;
+    height: 70px;
+    border-radius: 6px;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.accommodation-card .text-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.accommodation-card h4 {
+    margin: 0 0 4px 0;
+    font-size: 1em;
+}
+
+.accommodation-card:hover {
+    cursor: pointer;
+    background-color: #f1f3f4;
+}

@@ -1,53 +1,82 @@
 // search.html 에서 다중 마커 지도 표시
 
-// 다중마커
 function initMap () {
-    // accommodations 객체에서 새로운 속성들을 받아오도록 구조 분해 할당을 수정합니다.
+    // (1. 전체 숙소 데이터 받아오기)
     const accommodations = window.accommodations || [];
+
+    // (2. 구글 맵 생성 및 중심 좌표 설정)
     const map = new google.maps.Map(document.getElementById("map"), {
-        // 전주시 중심 좌표
-        center: { lat: 35.85, lng: 127.13 },
-        // 지도 확대 크기
-        zoom: 13,
+        center: { lat: 35.85, lng: 127.13 }, // 전주시 중심
+        zoom: 13,                            // 초기 확대 정도
     });
 
-    // (1.지도 경계를 조정)
+    // (3. 지도 경계 객체 생성 → 모든 마커 범위 맞춤용)
     const bounds = new google.maps.LatLngBounds();
-    // (ㄱ.클릭시 정보 제공)
+
+    // (4. InfoWindow 객체 생성 → 마커 클릭 시 정보창)
     const infowindow = new google.maps.InfoWindow();
 
-    accommodations.forEach(({ name, address, lat, lng, image_url, rating_score, rating_count }) => {
-        // console.log("현재 숙소 정보 (평점 포함): ", { name, address, lat, lng, image_url, 
-        // rating_score, rating_count });
+    // (5. 숙소 리스트 컨테이너 초기화)
+    const listContainer = document.getElementById("accommodation-list");
+    listContainer.innerHTML = "";
 
+    // (6. InfoWindow에 들어갈 HTML content 생성 함수)
+    function generateInfoContent({ name, address, image_url, rating_score, rating_count }) {
+        return `
+            <div style="max-width: 250px;">
+                <a href="/result?name=${encodeURIComponent(name)}" 
+                style="text-decoration: none; color: black; outline: none; border: none; ">
+                    <img src="${image_url}" alt="${name}" style="width: 100%; border-radius: 6px;">
+                    <h4 style="margin: 8px 0 4px 0;">${name}</h4>
+                    <p>⭐ ${rating_score} (${rating_count})<br>${address}</p>
+                </a>
+            </div>
+        `;
+    }
+
+    // (7. 숙소 리스트 순회하며 마커 및 리스트 항목 생성)
+    accommodations.forEach(({ name, address, lat, lng, image_url, rating_score, rating_count }) => {
+        // (7-1. 지도에 마커 추가)
         const marker = new google.maps.Marker({
-            position : { lat, lng },
+            position: { lat, lng },
             map,
         });
-        // (2.extend 메소드를 호출해서 위치정보 넘김)
-        bounds.extend(marker.position);
-        // (ㄴ.클릭이벤트시 정보창 제공)
-        marker.addListener("click", () => {
-            // 마커 클릭시 지도 중심 이동
-            map.panTo(marker.position);
 
-            // 정보창 content에 평점과 리뷰 수를 추가합니다.
-            const content = `
-                <div style="max-width: 200px;">
-                    <a href="/result?name=${encodeURIComponent(name)}" style="text-decoration: none; color: black;">
-                        <img src="${image_url}" alt="${name}" style="width: 100%; height: auto; border-radius: 8px;">
-                        <p><strong>${name}</strong>⭐${rating_score} (${rating_count})
-                        <br>${address}</p>
-                    </a>
-                </div>
-            `;
+        // (7-2. 지도 범위에 현재 마커 포함시키기)
+        bounds.extend(marker.position);
+
+        // (7-3. 마커 클릭 시 InfoWindow 열기)
+        marker.addListener("click", () => {
+            const content = generateInfoContent({ name, address, image_url, rating_score, rating_count });
             infowindow.setContent(content);
-            infowindow.open({
-                anchor: marker,
-                map,
-            });
+            infowindow.open(map, marker);
         });
+
+        // (7-4. 좌측 리스트 항목 구성)
+        const card = document.createElement("div");
+        card.className = "accommodation-card";
+        card.innerHTML = `
+            <img src="${image_url}" alt="${name}">
+            <div class="text-content">
+                <h4>${name}</h4>
+                <p>⭐ ${rating_score} (${rating_count})</p>
+                <p>${address}</p>
+            </div>
+        `;
+
+        // (7-5. 리스트 클릭 시 해당 마커로 이동 + InfoWindow 열기)
+        card.addEventListener("click", () => {
+            map.panTo({ lat, lng });
+            map.setZoom(15);
+            const content = generateInfoContent({ name, address, image_url, rating_score, rating_count });
+            infowindow.setContent(content);
+            infowindow.open(map, marker);
+        });
+
+        // (7-6. 리스트에 카드 추가)
+        listContainer.appendChild(card);
     });
-    // (3.객체의 fitbounds 메소드에 지도 경계 객체 넘김)
+
+    // (8. 전체 마커가 화면에 보이도록 자동 확대/이동)
     map.fitBounds(bounds);
-};
+}

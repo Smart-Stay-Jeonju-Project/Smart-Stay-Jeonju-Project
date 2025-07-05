@@ -188,7 +188,8 @@ def autocomplete():
                 normalized_words = [w.replace(' ', '') for w in words]
 
                 if (name_lower.startswith(term) or                          # 전체 이름이 term으로 시작
-                    any(w.startswith(term) for w in normalized_words)):     # 단어 중 하나라도 term으로 시작
+                    # any(w.startswith(term) for w in normalized_words)) :     # 단어 중 하나라도 term으로 시작
+                    any(term in w and len(term) >= 2 for w in normalized_words)) : # 2글자 이상 포함된 
                     suggestions.append(name)
 
         return jsonify(sorted(set(suggestions))[:5])    # 인덱스 0-4까지만 출력
