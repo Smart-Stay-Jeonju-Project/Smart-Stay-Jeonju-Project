@@ -34,12 +34,11 @@ def load_links_from_file(fullPath):
         print("파일을 불러오는 데 실패했습니다. error:", e)
         return 0
 
-number = 0
 
-def review_count(review, name, page_num, number) :
+def review_count(review, name, page_num, number, link_num) :
     import re
     try :
-        nickname_tag = review.select_one('div.css-1bh2qmi > div > p')
+        nickname_tag = review.select_one('div.css-1bh2qmi > div:nth-child(2) > p.css-y9z2ll')
         if nickname_tag :
             nickname = nickname_tag.get_text()
         else :
@@ -76,9 +75,8 @@ def review_count(review, name, page_num, number) :
     except Exception as e :
         harf = 0
     rating = full + harf
-    review_id_name = f"{review_id}_{number:03d}"
-    review_post = {'id': review_id_name, 'nickname':nickname, 'name': name, 'review_content':content, 'rating':rating, 'write_date':write_date }
-    print(review_post)
+    review_id_name = f"{review_id}_{link_num}_{number:03d}"
+    review_post = {'id': review_id_name, 'name': name, 'nickname':nickname, 'review_content':content, 'rating':rating, 'write_date':write_date }
     return review_post
 
 def all_save_reviews(all_review) :
@@ -125,15 +123,16 @@ def get_review_details(driver, links):
     link_num = 0
     try :
         for link in links[:] :
+            review_num = 0
             link_num += 1
             reviews = []
-            count = 1
-            number = 0
+            page_count = 1
             driver.get(link)
             time.sleep(4)
             soup = BeautifulSoup(driver.page_source, 'html.parser')
             name = soup.select_one('h1.css-17we8hh').text.strip()
             print(f"{name} 리뷰를 수집하겠습니다...")
+
             search_tag = soup.select('div.css-1bjv6bx')     # <class 'bs4.element.ResultSet'>
 
             # 리뷰 페이지 수 구하기
@@ -143,44 +142,57 @@ def get_review_details(driver, links):
                 rating_count = [ int(rating) for rating in rating_count if rating.isdigit() ]
                 rating_count = int(''.join(map(str, rating_count)))
             print(rating_count)
-
-            review_page = round (rating_count / 5)
+            import math
+            review_page = math.ceil (rating_count / 5)
             print(f"총 리뷰 페이지 : {review_page}")
+
             try :
                 for page_num in range(1, review_page + 1) :
+                    print(f"현재 페이지 {page_num}/{review_page}")
                     soup = BeautifulSoup(driver.page_source, 'html.parser')
                     time.sleep(1)
                     search_tag = soup.select('div.css-xogpio')
+                    print(f"찾은 셀렉트 개수 : {len(search_tag)}")
                     time.sleep(1)
+                    
                     for review in search_tag :
-                        number += 1
-                        post = review_count(review, name, page_num, number)
+                        review_num += 1
+                        post = review_count(review, name, page_num, review_num, link_num)
                         reviews.append(post)
                         all_reviews.append(post)
-                        if len(reviews) >= 20 :
+                    
+                    if len(reviews) >= 25 :
+                        save_reviews(reviews,link_num)
+                        print(reviews)
+                        reviews = []
+                        print(f"🐣{name} 숙소 리뷰🐣\n🐰{page_num}/{review_page} 리뷰 수집중🐰\n🍀{review_num}/{rating_count} 수집 완료 ! 🍀")
+                    # 마지막 페이지면 다음 버튼 없음 button[aria-label='다음'] disabled
+                    page_count += 1
+                    try :
+                        if page_count % 5 == 1 :
+                            next_btn_selector = "button[aria-label='다음']"
+                        else :
+                            now_btn_selector = 'button.css-1rpwxx7'
+                            next_btn_selector = now_btn_selector + ' + button.css-1v52o0s'
+                        
+                        next_btn = WebDriverWait(driver, 10).until(
+                            EC.element_to_be_clickable((By.CSS_SELECTOR, next_btn_selector))
+                        )
+
+                        driver.execute_script("arguments[0].scrollIntoView(true);", next_btn)
+                        time.sleep(1)
+                        driver.execute_script("arguments[0].click();", next_btn)
+                        print(f"{page_num+1} 페이지로 이동합니다")
+                        time.sleep(2.5)
+                    except Exception as e :
+                        if page_count > review_page :
                             save_reviews(reviews,link_num)
-                            reviews = []
-                        count += 1
-                        try :
-                            if count % 5 == 1 :
-                                next_btn_selector = "button[aria-label='다음']"
-                            else :
-                                now_btn_selector = 'button.css-1rpwxx7'
-                                next_btn_selector = now_btn_selector + ' + button.css-1v52o0s'
-                            
-                            next_btn = WebDriverWait(driver, 10).until(
-                                EC.element_to_be_clickable((By.CSS_SELECTOR, next_btn_selector))
-                            )
-                            driver.execute_script("arguments[0].scrollIntoView(true);", next_btn)
-                            time.sleep(1)
-                            driver.execute_script("arguments[0].click();", next_btn)
-                            print(f"{page_num+1} 페이지로 이동합니다")
-                        except Exception as e :
-                            print("다음 페이지로 이동 실패", e)
-                            print("다음 숙소 리뷰를 수집하겠습니다")
+                            print("\n수집 완료했습니다 🌸")
+                            break
+                        else :
+                            print("다음 페이지가 없습니다", e)
             except Exception as e :
-                print("버튼 클릭 실패 :", e)
-                print("다음 숙소 리뷰를 수집하겠습니다")
+                print("리뷰 수집에 오류가 발생했습니다 :", e)
             finally :
                 save_reviews(reviews,link_num)
     except Exception as e :
