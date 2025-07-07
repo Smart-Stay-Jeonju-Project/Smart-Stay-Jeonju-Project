@@ -79,7 +79,6 @@ def get_accommodation_details(driver, links):
         save_info(posts)
     save_info(all_posts)
 
-
 def save_info(all_info) :
     if all_info :
         filename = "yeogi_info.csv"
@@ -89,10 +88,9 @@ def save_info(all_info) :
             df.to_csv(f"{fullPath}", mode='a',index=False, encoding='utf-8-sig',header=False)
             return True
         else :
-            open(fullPath, 'w', encoding='utf-8-sig').close()
+            df.to_csv(f"{fullPath}", mode='w',index=False, encoding='utf-8-sig',header=True)
             print("기존 파일이 없거나 비어있어 새로 저장합니다\n파일경로 :", fullPath)
             return False
-
 
 def main():
     driver = initialze_driver()
