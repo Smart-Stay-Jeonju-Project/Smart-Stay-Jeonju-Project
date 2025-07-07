@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, flash, url_for
+from flask import Blueprint, render_template, request, redirect, flash, jsonify
 import pandas as pd
 import os
 from utils.filename import get_image_url
@@ -7,15 +7,58 @@ bp = Blueprint('main', __name__, url_prefix='/')
 
 @bp.route('/')
 def main():
+    category = request.args.get('category', '호텔').strip() # 일단 기본값 호텔
+    accommodations = []
     keyword_list = load_keywords()
-    return render_template('main.html', keyword_list=keyword_list)
+
+    csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
+    
+    try:
+        df = pd.read_csv(csv_path, encoding='utf-8')
+        # 추천 숙소 리스트에 띄울 데이터들 정제
+        df['category'] = df['category'].astype(str).fillna('').str.strip()
+        df['name'] = df['name'].astype(str).fillna('').str.strip()
+        df['address'] = df['address'].astype(str).fillna('').str.strip()
+        df['rating_score'] = df['rating_score'].astype(float)
+        df['rating_count'] = (
+            df['rating_count']
+            .astype(str).str.replace('"', '').str.replace(',', '')
+            .pipe(pd.to_numeric, errors='coerce')
+            .fillna(0).astype(int)
+        )
+
+        # category 필터링
+        filtered_df = df[df['category'].str.contains(category, case=False, na=False)]
+
+        # 추천 숙소 데이터들
+        for _, row in filtered_df.iterrows():
+            accommodation = {
+                "name": row['name'],
+                "address": row['address'],
+                "rating_score": row['rating_score'],
+                "rating_count": row['rating_count'],
+                "formatted_rating_count": f"{row['rating_count']:,}" if row['rating_count'] >= 1000 else str(row['rating_count']),
+                "image_url": get_image_url(row['name'])
+            }
+            accommodations.append(accommodation)
+
+    except Exception as e:
+        print(e)
+
+    return render_template(
+        'main.html',
+        keyword_list=keyword_list,
+        accommodations=accommodations,
+        selected_category=category
+    )
+
 
 # 키워드 목록들
 def load_keywords():
     csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
     try:
         df = pd.read_csv(csv_path, encoding='utf-8')
-        
+
         df['keyword'] = df['keyword'].astype(str).str.strip()
 
         keywords = set()
@@ -121,3 +164,34 @@ def search():
     except FileNotFoundError:
         flash("데이터 파일을 찾을 수 없습니다.", "error")
         return redirect('/')
+
+# 자동완성 검색기능
+@bp.route('/autocomplete', methods=['GET'])
+def autocomplete():
+    search_type = request.args.get('search_type', '')
+    term = request.args.get('term', '').strip().lower().replace('-', '').replace(' ', '')
+
+    suggestions = []
+    csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
+
+    try:
+        df = pd.read_csv(csv_path, encoding='utf-8')
+        df['name'] = df['name'].astype(str).fillna('').str.strip()
+        if search_type == 'name':
+            for name in df['name']:
+                name_lower = name.lower().replace('-', '').replace(' ', '')
+
+                # 단어별 검색을 위해 원래 단어 기준도 따로 보존
+                words = name.lower().replace('-', ' ').split()
+
+                # 각 단어도 공백, '-' 제거 후 비교
+                normalized_words = [w.replace(' ', '') for w in words]
+
+                if (name_lower.startswith(term) or                          # 전체 이름이 term으로 시작
+                    # any(w.startswith(term) for w in normalized_words)) :     # 단어 중 하나라도 term으로 시작
+                    any(term in w and len(term) >= 2 for w in normalized_words)) : # 2글자 이상 포함된 
+                    suggestions.append(name)
+
+        return jsonify(sorted(set(suggestions))[:5])    # 인덱스 0-4까지만 출력
+    except Exception as e:
+        print(e)
