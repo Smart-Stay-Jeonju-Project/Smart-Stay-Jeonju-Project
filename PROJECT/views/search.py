@@ -19,7 +19,7 @@ def on_search():
 
     for row in accommodations:
         row['image_url'] = get_image_url(row['name'])
-        print(f"숙소 이름: {row['name']}, 생성된 이미지 URL: {row['image_url']}")
+        # print(f"숙소 이름: {row['name']}, 생성된 이미지 URL: {row['image_url']}")
 
     return render_template(
         'search.html',
