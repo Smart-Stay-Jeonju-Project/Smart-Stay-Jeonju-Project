@@ -11,7 +11,7 @@ def main():
     accommodations = []
     keyword_list = load_keywords()
 
-    csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
+    csv_path = os.path.join('DATA', 'tmp', 'practice.csv')
     
     try:
         df = pd.read_csv(csv_path, encoding='utf-8')
@@ -55,7 +55,7 @@ def main():
 
 # 키워드 목록들
 def load_keywords():
-    csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
+    csv_path = os.path.join('DATA', 'tmp', 'practice.csv')
     try:
         df = pd.read_csv(csv_path, encoding='utf-8')
 
@@ -84,7 +84,7 @@ def search():
     # print("search_term : ", search_term)
 
     # csv 파일 경로
-    csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
+    csv_path = os.path.join('DATA', 'tmp', 'practice.csv')
 
     try:
         # CSV 파일에서 필요한 컬럼들을 모두 읽어옵니다.
@@ -172,7 +172,7 @@ def autocomplete():
     term = request.args.get('term', '').strip().lower().replace('-', '').replace(' ', '')
 
     suggestions = []
-    csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
+    csv_path = os.path.join('DATA', 'tmp', 'practice.csv')
 
     try:
         df = pd.read_csv(csv_path, encoding='utf-8')

@@ -11,7 +11,7 @@ def on_search():
     search_type = request.args.get('search_type', '')
     search_term = request.args.get('search_term', '')
 
-    csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
+    csv_path = os.path.join('data', 'tmp', 'practice.csv')
     df = pd.read_csv(csv_path, encoding='utf-8')
     df = df[['name', 'address', 'lat', 'lng']].dropna()
 
