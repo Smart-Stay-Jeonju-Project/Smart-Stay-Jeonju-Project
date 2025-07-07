@@ -12,7 +12,7 @@ def on_result():
     search_term = request.args.get('search_term', '').strip()
     name = request.args.get('name', '').strip()  # 숙소명
 
-    csv_path = os.path.join('DATA', 'list', 'tmp', 'practice.csv')
+    csv_path = os.path.join('data', 'tmp', 'practice.csv')
 
     try:
         df = pd.read_csv(csv_path, encoding='utf-8')

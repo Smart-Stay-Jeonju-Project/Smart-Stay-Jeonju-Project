@@ -14,7 +14,7 @@
         <li><a href="{{ url_for('main.search') }}?search_type=keyword&search_term={{ keyword }}">{{ keyword }}</a></li>
         {% endfor %}
     </ul>
-    {% else %}
+{% else %}
     <strong>키워드를 선택하세요 :</strong>
     <ul>
         {% for keyword in keyword_list %}
@@ -40,7 +40,10 @@
         const searchTerm = "{{ search_term }}";  // Flask에서 넘긴 검색어를 JS 변수로 사용
     </script>
     <p>{{ result }}</p>
-    <!-- 지도 보여줄 구역 지정 -->
-    <div id="map" style="height: 600px;"></div>
-    <!-- <div id="map" style="height: 600px; width : 70%; float : right;"></div> -->
+    <!-- 지도 -->
+    <div id="map-wrapper">
+        <div id="map"></div>
+        <div id="list-panel">
+            <div id="accommodation-list"></div> 
+    </div>
 {% endblock %}
