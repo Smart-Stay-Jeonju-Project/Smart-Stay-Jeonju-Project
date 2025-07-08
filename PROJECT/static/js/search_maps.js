@@ -5,7 +5,7 @@ function initMap () {
     const accommodations = window.accommodations || [];
 
     // (2. 구글 맵 생성 및 중심 좌표 설정)
-    const map = new google.maps.Map(document.getElementById("map"), {
+    const map = new google.maps.Map(document.getElementById("map_in_search"), {
         center: { lat: 35.85, lng: 127.13 }, // 전주시 중심
         zoom: 13,                            // 초기 확대 정도
     });
