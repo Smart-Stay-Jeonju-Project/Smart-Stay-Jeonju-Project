@@ -9,23 +9,18 @@
     <body>
         <!-- 로고 -->
         <p>
-            <!-- 홈으로 -->
-            <!--('blueprint이름.함수이름') -->
             <a href="{{ url_for('main.main') }}">
-                <!-- 로고 이미지 -->
                 <img src="{{url_for('static', filename='/images/logo.jpg')}}" height="100" width="100">
             </a>
         </p>
         <!-- 제목 -->
         <p>
-            <!-- 홈으로 -->
             <a href="{{ url_for('main.main') }}">
                 <h2> 전주 어때 </h2>
             </a>
         </p>
         <!-- 검색 메뉴 -->
         <form action="{{url_for('main.search')}}" method="get">
-            <!-- get방식으로 main의 search 함수로 이동 -->
             <div class="">
                 <label for="search_type" class="form_label">검색 메뉴</label>
                 <select name="search_type" id="search_type" class="">
@@ -42,7 +37,6 @@
                     <ul id="keywordUI">
                         {% for keyword in keyword_list %}
                         <li>
-                            <!-- 키워드 목록을 출력 + 선택된 키워드 강조 -->
                             <a href="{{ url_for('main.search') }}?search_type=keyword&search_term={{ keyword }}"
                                 {% if keyword == search_term %}
                                     style="background-color: #ffdddd; font-weight: bold; color: red;"
@@ -57,12 +51,12 @@
                 <!-- 주소 선택 시 입력 받는 데이터 제한 -->
                 <div>
                     <p id="addressHint" style="color: red; display: none;">
-                        ※ '덕진구' 또는 '완산구'를 입력해주세요.
+                        <!--※ '덕진구' 또는 '완산구'를 입력해주세요.-->
                     </p>
                     <script src="{{ url_for('static', filename='js/address_select.js') }}"></script>
                 </div>
             </div>
-            <!-- 검색바 + 자동완성기능 + 이전검색어 유지 -->
+            <!-- 검색바 -->
             <div class="autocomplete_wrapper" id="autocomplete_wrapper">
                 <label for="search_term" class="">검색어 입력</label>
                 <input type="text" name="search_term" id="search_term" class="" placeholder="검색어를 입력하세요" maxlength="255" 
@@ -98,9 +92,8 @@
                 const searchTypeSelect = document.getElementById("search_type");
                 const searchInput = document.getElementById("search_term");
 
-                // 검색 타입 바뀔때 검색어 초기화
                 searchTypeSelect.addEventListener("change", function () {
-                    searchInput.value = ""; 
+                    searchInput.value = ""; // 검색어 초기화
                 });
             });
         </script>
