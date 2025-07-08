@@ -34,8 +34,8 @@ def load_links_from_file(fullPath):
         print("파일을 불러오는 데 실패했습니다. error:", e)
         return 0
 
-
 def review_count(review, name, page_num, number, link_num) :
+    """숙소 리뷰 정보 수집"""
     import re
     try :
         nickname_tag = review.select_one('div.css-1bh2qmi > div:nth-child(2) > p.css-y9z2ll')
@@ -49,11 +49,10 @@ def review_count(review, name, page_num, number, link_num) :
     try :
         content_tag = review.select_one('div.css-23goey > div > p')
         if content_tag :
-            #content = re.sub(r"[^ㄱ-ㅎㅏ-ㅣ-가-힣0-9 ]", "", content_tag.get_text().strip())
             review_text = content_tag.get_text()
             review_text = re.sub(r'[\r\n\t ]+', ' ', review_text)     # 줄바꿈/탭 → 공백
             review_text = re.sub(r'\s+', ' ', review_text)           # 연속 공백 → 하나의 공백
-            content = review_text.replace('\u200b', '').strip()  # 특수 공백 제거 + 양끝 공백 제거
+            content = review_text.replace('\u200b', '').strip()     # 특수 공백 제거 + 양끝 공백 제거
         else :
             content = ""
     except Exception as e :
@@ -76,7 +75,7 @@ def review_count(review, name, page_num, number, link_num) :
         harf = 0
     rating = full + harf
     review_id_name = f"{review_id}_{link_num}_{number:03d}"
-    review_post = {'id': review_id_name, 'name': name, 'nickname':nickname, 'review_content':content, 'rating':rating, 'write_date':write_date }
+    review_post = {'id': review_id_name, 'name': name, 'nickname':nickname, 'review_content':content, 'rating':rating, 'write_date':write_date, 'source' : 'y' }
     return review_post
 
 def all_save_reviews(all_review) :
@@ -165,7 +164,7 @@ def get_review_details(driver, links):
                         save_reviews(reviews,link_num)
                         print(reviews)
                         reviews = []
-                        print(f"🐣{name} 숙소 리뷰🐣\n🐰{page_num}/{review_page} 리뷰 수집중🐰\n🍀{review_num}/{rating_count} 수집 완료 ! 🍀")
+                        print(f"🐣 {name} 숙소 리뷰 🐣\n🐰 {page_num}/{review_page} 페이지 수집중 🐰\n🍀 {review_num}/{rating_count} 수집 완료 ! 🍀")
                     # 마지막 페이지면 다음 버튼 없음 button[aria-label='다음'] disabled
                     page_count += 1
                     try :

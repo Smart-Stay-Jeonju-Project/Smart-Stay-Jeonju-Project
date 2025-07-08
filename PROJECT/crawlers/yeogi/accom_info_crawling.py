@@ -100,7 +100,6 @@ def main():
     else :
         print("전부 저장하지 못했습니다")
     driver.quit()
-    
 
 if __name__ == "__main__":
     main()
