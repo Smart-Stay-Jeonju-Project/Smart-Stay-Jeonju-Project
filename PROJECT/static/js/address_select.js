@@ -2,7 +2,7 @@
 
 // 이벤트 리스너
 document.addEventListener("DOMContentLoaded", function () {
-    const searchTypeSelect = document.getElementById("search_type"); // 검색타입 주소
+    const searchTypeSelect = document.getElementById("search_type"); // 검색타입 : 주소
     const searchTermInput = document.getElementById("search_term");  // 검색어
     const addressHint = document.getElementById("addressHint");      // 힌트 : 덕진구/완산구
 
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 searchTermInput.style.display = "block";
             }
         }
-        // 주소 검색 시 보임
+        // 주소 검색 시 힌트 보임 & 아니면 숨김
         if (addressHint) {
             if (selectedType === "address") {
                 addressHint.style.display = "block";
