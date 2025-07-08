@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from utils.filename import get_image_url
 
+# 주소/search_map/ 으로 접근 => bp.route('/')에 의해 search.html 렌더링
 bp = Blueprint('search', __name__, url_prefix='/search_map')
 
 # search.html 지도 마커에 표시할 정보

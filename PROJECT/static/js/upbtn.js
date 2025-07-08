@@ -6,12 +6,14 @@ function scrollToTop() {
 // 맨 위로 버튼 객체
 const scrollBtn = document.getElementById("scrollTopBtn");
 
+// scrollBtn 객체 있으면
 if (scrollBtn) {
     // 스크롤 시 버튼 보이기
     window.addEventListener("scroll", function () {
         if (window.scrollY > 300) {
             scrollBtn.style.display = "block";
         } else {
+            // y축 300이하면 안보이기 
             scrollBtn.style.display = "none";
         }
     });
