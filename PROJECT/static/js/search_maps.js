@@ -6,8 +6,8 @@ function initMap () {
 
     // 구글 맵 생성 및 중심 좌표 설정
     const map = new google.maps.Map(document.getElementById("map_in_search"), {
-        center: { lat: 35.85, lng: 127.13 }, // 전주시 중심
-        zoom: 13,                            // 초기 확대 정도
+        center : { lat : 35.85, lng : 127.13 }, // 전주시 중심
+        zoom : 13,                            // 초기 확대 정도
     });
 
     // 지도 경계 객체 생성 - 모든 마커 범위 맞춤용
@@ -23,11 +23,11 @@ function initMap () {
     // InfoWindow에 들어갈 HTML content 생성 함수
     function generateInfoContent({ name, address, image_url, rating_score, rating_count }) {
         return `
-            <div style="max-width: 250px;">
+            <div style="max-width : 250px;">
                 <a href="/result?name=${encodeURIComponent(name)}" 
-                style="text-decoration: none; color: black; outline: none; border: none; ">
-                    <img src="${image_url}" alt="${name}" style="width: 100%; border-radius: 6px;">
-                    <h4 style="margin: 8px 0 4px 0;">${name}</h4>
+                style="text-decoration : none; color : black; outline : none; border : none; ">
+                    <img src="${image_url}" alt="${name}" style="width: 100%; border-radius : 6px;">
+                    <h4 style="margin : 8px 0 4px 0;">${name}</h4>
                     <p>⭐ ${rating_score} (${rating_count})<br>${address}</p>
                 </a>
             </div>

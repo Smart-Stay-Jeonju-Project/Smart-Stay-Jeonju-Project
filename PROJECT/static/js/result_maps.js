@@ -29,15 +29,15 @@ function initMap() {
 
     // 지도 생성과 중심 좌표
     const map = new google.maps.Map(mapDiv, {
-        center: { lat: lat, lng: lng },
-        zoom: 16.8,
+        center : { lat : lat, lng : lng },
+        zoom : 16.8,
     });
 
     // 지도에 마커 
     new google.maps.Marker({
-        position: { lat: lat, lng: lng },
-        map: map,
-        title: accommodation.name || "숙소 위치"
+        position : { lat : lat, lng : lng },
+        map : map,
+        title : accommodation.name || "숙소 위치"
     });
 }
 

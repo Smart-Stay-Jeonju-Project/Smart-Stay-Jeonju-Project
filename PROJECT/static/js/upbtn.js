@@ -1,6 +1,6 @@
 // 맨 위로 이동 버튼
 function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top : 0, behavior : 'smooth' });
 }
 
 // 맨 위로 버튼 객체
@@ -20,6 +20,6 @@ if (scrollBtn) {
 
     // 클릭 시 맨 위로 이동
     scrollBtn.addEventListener("click", function () {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top : 0, behavior : 'smooth' });
     });
 }
