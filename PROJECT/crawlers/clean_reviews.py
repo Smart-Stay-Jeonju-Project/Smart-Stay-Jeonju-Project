@@ -33,7 +33,9 @@ def delete_none_data(reviews):
         .str.replace(r"[^ㄱ-ㅎㅏ-ㅣ가-힣0-9 ]", "", regex=True)
         .str.replace(r'\s+', ' ', regex=True)
         .str.strip()
+        .replace(r'',)
     )
+    content.dropna(subset=['review_content'], inplace=True)
     return content
 
 # 날짜 포멧
