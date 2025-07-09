@@ -2,10 +2,11 @@
 
 function initMap () {
     // (1. 전체 숙소 데이터 받아오기)
-    const accommodations = window.accommodations || [];
+    //const accommodations = window.accommodations || [];
+    const accommodations = accom_list || [];
 
     // (2. 구글 맵 생성 및 중심 좌표 설정)
-    const map = new google.maps.Map(document.getElementById("map_in_search"), {
+    const map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 35.85, lng: 127.13 }, // 전주시 중심
         zoom: 13,                            // 초기 확대 정도
     });
@@ -19,26 +20,29 @@ function initMap () {
     // (5. 숙소 리스트 컨테이너 초기화)
     const listContainer = document.getElementById("accommodation-list");
     listContainer.innerHTML = "";
-
+    
     // (6. InfoWindow에 들어갈 HTML content 생성 함수)
-    function generateInfoContent({ name, address, image_url, rating_score, rating_count }) {
+    function generateInfoContent({ name, address, image, rating}) {
         return `
             <div style="max-width: 250px;">
                 <a href="/result?name=${encodeURIComponent(name)}" 
                 style="text-decoration: none; color: black; outline: none; border: none; ">
-                    <img src="${image_url}" alt="${name}" style="width: 100%; border-radius: 6px;">
+                    <img src="static/images/tmp/${image}" alt="${name}" style="width: 100%; border-radius: 6px;">
                     <h4 style="margin: 8px 0 4px 0;">${name}</h4>
-                    <p>⭐ ${rating_score} (${rating_count})<br>${address}</p>
+                    <p>⭐ ${rating} <br>${address}</p>
                 </a>
             </div>
         `;
     }
 
+
+
     // (7. 숙소 리스트 순회하며 마커 및 리스트 항목 생성)
-    accommodations.forEach(({ name, address, lat, lng, image_url, rating_score, rating_count }) => {
+    accommodations.forEach(({ name, category, address, latitude, longtitude, image, rating}) => {
+        
         // (7-1. 지도에 마커 추가)
         const marker = new google.maps.Marker({
-            position: { lat, lng },
+            position: { lat : latitude, lng : longtitude },
             map,
         });
 
@@ -47,7 +51,7 @@ function initMap () {
 
         // (7-3. 마커 클릭 시 InfoWindow 열기)
         marker.addListener("click", () => {
-            const content = generateInfoContent({ name, address, image_url, rating_score, rating_count });
+            const content = generateInfoContent({ name, category, address, image, rating});
             infowindow.setContent(content);
             infowindow.open(map, marker);
         });
@@ -56,19 +60,20 @@ function initMap () {
         const card = document.createElement("div");
         card.className = "accommodation-card";
         card.innerHTML = `
-            <img src="${image_url}" alt="${name}">
+            <img src="static/images/tmp/${image}" alt="${name}">
             <div class="text-content">
                 <h4>${name}</h4>
-                <p>⭐ ${rating_score} (${rating_count})</p>
+                <p>⭐ ${rating}</p>
                 <p>${address}</p>
-            </div>
-        `;
-
+                </div>
+                `;
+                //<p>⭐ ${rating_score} (${rating_count})</p>
+                
         // (7-5. 리스트 클릭 시 해당 마커로 이동 + InfoWindow 열기)
         card.addEventListener("click", () => {
-            map.panTo({ lat, lng });
+            map.panTo({ lat : latitude, lng : longtitude });
             map.setZoom(15);
-            const content = generateInfoContent({ name, address, image_url, rating_score, rating_count });
+            const content = generateInfoContent({ name, category, address, image, rating });
             infowindow.setContent(content);
             infowindow.open(map, marker);
         });
