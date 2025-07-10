@@ -1,4 +1,4 @@
-// 슬라이더
+// 추천 리스트 슬라이더
 
 document.addEventListener("DOMContentLoaded", function () {
     let currentSlide = 0;   
