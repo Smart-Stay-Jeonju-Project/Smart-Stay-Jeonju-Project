@@ -48,7 +48,7 @@ def clean_save_info(clean_accoms) :
         fullPath = saveTargetPath + filename
         df = pd.DataFrame(clean_accoms)
         try :
-            df.to_csv(fullPath, mode='a',index=False, encoding='utf-8-sig',header=False)
+            df.to_csv(fullPath, mode='a',index=False, encoding='utf-8-sig',header=True)
             print("저장 완료하였습니다")
         except Exception as e:
             print("저장 실패")
