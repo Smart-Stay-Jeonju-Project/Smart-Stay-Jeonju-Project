@@ -10,7 +10,7 @@ def create_app() :
 
     app.config['API_KEY'] = os.getenv("API_KEY")
     app.secret_key = config.SECRET_KEY
-    print("API_KEY from .env:", os.getenv("API_KEY"))
+    # print("API_KEY from .env:", os.getenv("API_KEY"))
     app.register_blueprint(main.bp)
     app.register_blueprint(result.bp)
     app.register_blueprint(search.bp)

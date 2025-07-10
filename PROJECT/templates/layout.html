@@ -10,6 +10,7 @@
         <!-- 로고 -->
         <p>
             <!-- 홈으로 -->
+            <!--('blueprint이름.함수이름') -->
             <a href="{{ url_for('main.main') }}">
                 <!-- 로고 이미지 -->
                 <img src="{{url_for('static', filename='/images/logo.jpg')}}" height="100" width="100">
@@ -24,6 +25,7 @@
         </p>
         <!-- 검색 메뉴 -->
         <form action="{{url_for('main.search')}}" method="get">
+            <!-- get방식으로 main의 search 함수로 이동 -->
             <div class="">
                 <label for="search_type" class="form_label">검색 메뉴</label>
                 <select name="search_type" id="search_type" class="">

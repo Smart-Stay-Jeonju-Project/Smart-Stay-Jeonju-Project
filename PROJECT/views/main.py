@@ -5,7 +5,7 @@ from utils.filename import get_image_url
 
 bp = Blueprint('main', __name__, url_prefix='/')
 
-# 기본 페이지 요청
+# 메인페이지에서 추천 숙소 리스트에 띄울 데이터들 정제
 @bp.route('/')
 def main() :
     category = request.args.get('category', '호텔').strip() # 일단 기본값 호텔
@@ -14,7 +14,6 @@ def main() :
 
     csv_path = os.path.join('DATA', 'tmp', 'practice.csv')
     
-    # 메인페이지에서 추천 숙소 리스트에 띄울 데이터들 정제
     try :
         df = pd.read_csv(csv_path, encoding='utf-8')
         # 컬럼들을 문자열로 변환, 결측치(NaN) 빈문자열로 대체, 앞뒤 공백제거

@@ -7,8 +7,10 @@
     <!-- 데이터는 잘 넘어와서 빨간줄 무시 -->
     <script>
         window.accommodations = {{ accommodations | tojson | safe }};
+        // 숙소 리스트를 json으로 변환해서 js 변수에 저장
         const searchTerm = "{{ search_term }}";
-        console.log("API Key:", "{{ google_maps_api_key }}");
+        // 검색어도
+        // console.log("API Key:", "{{ google_maps_api_key }}");
         // console.log(window.allKeywords)
     </script>
     <!-- main.js에서 지도 정보 가져오기 -->
