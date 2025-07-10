@@ -24,18 +24,20 @@ def delete_none_data(reviews):
 
     content.loc[:, 'name'] = (
         content['name']
-        .str.replace(r"[^ㄱ-ㅎㅏ-ㅣ가-힣0-9 ]", "", regex=True)
+        .str.replace(r'"','', regex=True)
+        .str.replace(r"[^가-힣 ]", "", regex=True)
         .str.replace(r'\s+', ' ', regex=True)
         .str.strip()
     )
     content.loc[:, 'review_content'] = (
         content['review_content']
-        .str.replace(r"[^ㄱ-ㅎㅏ-ㅣ가-힣0-9 ]", "", regex=True)
+        .str.replace(r'"','', regex=True)
+        .str.replace(r"[^가-힣 ]", "", regex=True)
         .str.replace(r'\s+', ' ', regex=True)
         .str.strip()
-        .replace(r'',)
     )
-    content.dropna(subset=['review_content'], inplace=True)
+    # 리뷰 내용이 최소 3글자 이상인 것만 가져오기
+    content = content[content['review_content'].str.len() >= 3]
     return content
 
 # 날짜 포멧
@@ -57,13 +59,17 @@ def set_date(content) :
             elif '시간 전' in date :
                 num = int(date.replace('시간 전', '').strip())
                 new_date = today - relativedelta(hours=num)
+            elif '분 전' in date :
+                num = int(date.replace('분 전', '').strip())
+                new_date = today - relativedelta(minutes=num)
             else :
                 print(date)
 
             converted_dates.append(new_date.strftime('%Y-%m'))
         except Exception as e :
             print(f"오류 발생 : {date} {e}")
-            return
+            new_date = None
+
     content['write_date'] = converted_dates
     return content
 
@@ -88,28 +94,17 @@ def main() :
         print(f"날짜를 변경하는데 실패했습니다 {e}")
     
     # 리뷰 데이터 저장
-    targetPath = 'DATA/RESULTS/'
-    saveFullPath = os.path.join(targetPath, 'y_cleaned_reviews_full.csv')
+    content.drop_duplicates(subset=['nickname','review_content','rating'], inplace=True)
+    targetPath = 'DATA/PROCESSED/'
+    saveFullPath = os.path.join(targetPath, 'y_duple_reviews.csv')
     content.to_csv(saveFullPath, encoding='utf-8-sig', index=False, header=True)
 
     # 텍스트만 추출해서 저장 (빈 값 제외)
-    new_review_df = content['review_content'].dropna()
-    filename = 'y_cleaned_review_texts.csv'
+    new_review_df = content['review_content'].dropna().drop_duplicates()
+
+    filename = 'y_only_texts.csv'
     savePath = os.path.join(targetPath, filename)
     new_review_df.to_csv(savePath, encoding='utf-8-sig', index=False, header=False)
-
-    datePath = 'CRAWLERS/'
-    # 텍스트만 추출해서 저장 (빈 값 제외)
-    dict_review_df = new_review_df.str.replace(r'\s+','',regex=True).str.strip()
-    filename = 'dict_review_texts.csv'
-    savePath = os.path.join(datePath, filename)
-    dict_review_df.to_csv(savePath, encoding='utf-8-sig', index=False, header=False)
-
-    # 중복 제거된 리뷰 저장
-    duple_review = new_review_df.drop_duplicates()
-    filename = 'y_reviews.csv'
-    savePath = os.path.join(datePath, filename)
-    duple_review.to_csv(savePath, encoding='utf-8-sig', index=False, header=False)
 
 if __name__ == '__main__' :
     main()

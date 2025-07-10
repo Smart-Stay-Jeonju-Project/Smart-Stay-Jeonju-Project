@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 targetPath = "DATA/RAW/accommodations/"
-saveTargetPath = "DATA/results/accommodations/yeogi/"
+saveTargetPath = "DATA/PROCESSED/accommodations/yeogi/"
 print("현재 작업 경로:", os.getcwd())
 
 # 파일에서 숙소 정보 불러오기
@@ -23,7 +23,7 @@ def clean_accommodation(accoms) :
         # 숙소 이름 : 특수문자 제거, 공백 정리
         accoms['name'] = (
             accoms['name']
-            .str.replace(r"[^ㄱ-ㅎㅏ-ㅣ가-힣0-9 ]", "", regex=True)
+            .str.replace(r"[^a-zA-Z가-힣0-9 ]", "", regex=True)
             .str.replace(r'\s+',' ',regex=True)
             .str.strip()
         )
