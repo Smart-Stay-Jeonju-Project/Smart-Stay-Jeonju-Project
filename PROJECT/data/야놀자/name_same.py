@@ -17,13 +17,10 @@ new_df = pd.read_csv('data/processed/accommodations/yeogi/clean_yeogi_info.csv',
 old_df = pd.read_csv('analysis/정리된_숙소_주소.csv', encoding='utf-8-sig')
 
 # old_df 에 있는 주소가 같으면, 위도 경도를 추가한다
-# name_map = dict(zip(old_df['name'], old_df['addr']))
-lat_map = dict(zip(old_df['address'], old_df['lat']))
-lng_map = dict(zip(old_df['address'], old_df['lng']))
+name_map = dict(zip(old_df['address'], old_df['name']))
 
-new_df['lat'] = new_df['address'].map(lat_map).fillna(new_df.get('lat'))
-new_df['lng'] = new_df['address'].map(lng_map).fillna(new_df.get('lng'))
-
+new_df['name'] = new_df['address'].map(name_map).fillna(new_df.get('name'))
+new_df['image'] = new_df['name'].astype(str) + '.jpg'
 
 # new_df.drop_duplicates(subset=['lat', 'lng'], keep='first', inplace=True)
 # address 기준으로 중복된 행 보기
