@@ -32,7 +32,6 @@ def load_links_from_file(fullPath):
     except Exception as e :
         print("파일을 불러오는 데 실패했습니다. error:", e)
 
-
 # 키워드로 검색된 숙소의 상세 정보를 가져오기
 def get_accommodation_details(driver, links):
     all_posts = []
@@ -58,10 +57,6 @@ def get_accommodation_details(driver, links):
             rating_score = 0
         try :
             rating_count = soup.select_one('span.css-1294han').text
-            # if rating_count :
-            #     rating_count = rating_count.replace(',','')
-            #     rating_count = [ int(rating) for rating in rating_count if rating.isdigit() ]
-            #     rating_count = int(''.join(map(str, rating_count)))
             print(rating_count)
         except Exception as e :
             print(f"평가수를 가져오지 못했습니다.\n에러메세지 : {e}")
@@ -71,9 +66,7 @@ def get_accommodation_details(driver, links):
         except Exception as e :
             print(f"상세주소를 가져오지 못했습니다.\n에러메세지 : {e}")
         
-        post = {'name':name, 'category':category, 'ratring_score':rating_score, 'rating_count':rating_count, 'address':address 
-                # , 'feature' : feature
-                }
+        post = {'name':name, 'category':category, 'ratring_score':rating_score, 'rating_count':rating_count, 'address':address }
         posts.append(post)
         all_posts.append(post)
         if len(posts) >= 20 :
@@ -86,21 +79,18 @@ def get_accommodation_details(driver, links):
         save_info(posts)
     save_info(all_posts)
 
-
 def save_info(all_info) :
     if all_info :
         filename = "yeogi_info.csv"
-        fullPath = targetPath + filename
+        fullPath = saveTargetPath + filename
         df = pd.DataFrame(all_info)
         if os.path.exists(fullPath) :
             df.to_csv(f"{fullPath}", mode='a',index=False, encoding='utf-8-sig',header=False)
             return True
         else :
-            open(fullPath, 'w', encoding='utf-8-sig').close()
+            df.to_csv(f"{fullPath}", mode='w',index=False, encoding='utf-8-sig',header=True)
             print("기존 파일이 없거나 비어있어 새로 저장합니다\n파일경로 :", fullPath)
             return False
-
-
 
 def main():
     driver = initialze_driver()
@@ -110,7 +100,6 @@ def main():
     else :
         print("전부 저장하지 못했습니다")
     driver.quit()
-
 
 if __name__ == "__main__":
     main()

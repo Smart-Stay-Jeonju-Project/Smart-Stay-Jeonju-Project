@@ -1,18 +1,14 @@
 import os
 import pandas as pd
-import re
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
-targetPath = 'DATA/RAW/REVIEWS/'
-filename = 'y_all_reviews.csv'
-content = 'result_contents.csv'
-
-fullPath = targetPath + filename
-datePath = 'CRAWLERS/'
-saveFullPath = datePath + content
 reviews = []
 def load_review_file() :
+    targetPath = 'DATA/RAW/REVIEWS/yeogi/'
+    filename = 'yeogi_all_reviews.csv'
+
+    fullPath = targetPath + filename
     if os.path.exists(fullPath) :
         reviews = pd.read_csv(fullPath, encoding='utf-8-sig')
     else :
@@ -20,20 +16,31 @@ def load_review_file() :
         print("현재 작업 경로:", os.getcwd())
     return reviews
 
-#print(reviews.iloc[[2]].values)
-#old_date = reviews['write_date'].tolist()
 today = datetime.today()
 
-#date_df = pd.DataFrame(old_date)
-
+# 결측치 제거, 리뷰 텍스트 정제 
 def delete_none_data(reviews):
-    content = reviews.dropna(subset=['review_content'], how='any', axis=0)
-    content = content.dropna(subset=['write_date'], how='any', axis=0)
-    print(content.info())
+    content = reviews.dropna(subset=['review_content', 'write_date']).copy()
 
+    content.loc[:, 'name'] = (
+        content['name']
+        .str.replace(r'"','', regex=True)
+        .str.replace(r"[^가-힣 ]", "", regex=True)
+        .str.replace(r'\s+', ' ', regex=True)
+        .str.strip()
+    )
+    content.loc[:, 'review_content'] = (
+        content['review_content']
+        .str.replace(r'"','', regex=True)
+        .str.replace(r"[^가-힣 ]", "", regex=True)
+        .str.replace(r'\s+', ' ', regex=True)
+        .str.strip()
+    )
+    # 리뷰 내용이 최소 3글자 이상인 것만 가져오기
+    content = content[content['review_content'].str.len() >= 3]
     return content
 
-
+# 날짜 포멧
 def set_date(content) :
     today = datetime.today()
     converted_dates = []
@@ -52,57 +59,52 @@ def set_date(content) :
             elif '시간 전' in date :
                 num = int(date.replace('시간 전', '').strip())
                 new_date = today - relativedelta(hours=num)
+            elif '분 전' in date :
+                num = int(date.replace('분 전', '').strip())
+                new_date = today - relativedelta(minutes=num)
             else :
                 print(date)
 
             converted_dates.append(new_date.strftime('%Y-%m'))
         except Exception as e :
             print(f"오류 발생 : {date} {e}")
-            return
+            new_date = None
+
     content['write_date'] = converted_dates
-    print(content.info())
     return content
 
-
-# try :
-#     for review in reviews :
-#         review['content'] = str(re.sub(r"[^ㄱ-ㅎㅏ-ㅣ-가-힣0-9 ]", "", review['content'].get_text().strip()))
-        
-# except Exception as e :
-#     print(e)
-# print(df.iloc['id'])
 def main() :
+    # 파일 불러오기
     try :
         reviews = load_review_file()
         print("파일을 로드했습니다")
     except Exception as e :
         print(f"파일을 불러오는데 실패했습니다 {e}")
+        return
+    
+    # 결측치 제거
     try :
-        content = delete_none_data(reviews) 
+        new_content = delete_none_data(reviews)
     except Exception as e :
-        print(f"삭제하는 데 오류가 발생했습니다 {e}")
+        print(f"데이터를 정제하는 데 오류가 발생했습니다 {e}")
     try :
-        content['name'] = (content['name'].str.replace(r"[^ㄱ-ㅎㅏ-ㅣ가-힣0-9 ]", "", regex=True).str.replace(r'\s+',' ',regex=True).str.strip())
-        content['review_content'] = (content['review_content'].str.replace(r"[^ㄱ-ㅎㅏ-ㅣ가-힣0-9 ]", "", regex=True).str.replace(r'\s+',' ',regex=True).str.strip())
-        print("내용을 변경하였습니다")
-    except Exception as e :
-        print(f"내용을 변경하는데 실패했습니다 {e}")
-    try :
-        new_content = set_date(content)
+        content = set_date(new_content)
         print("날짜를 변경하였습니다")
     except Exception as e :
         print(f"날짜를 변경하는데 실패했습니다 {e}")
+    
+    # 리뷰 데이터 저장
+    content.drop_duplicates(subset=['nickname','review_content','rating'], inplace=True)
+    targetPath = 'DATA/PROCESSED/'
+    saveFullPath = os.path.join(targetPath, 'y_duple_reviews.csv')
+    content.to_csv(saveFullPath, encoding='utf-8-sig', index=False, header=True)
 
-    new_df = pd.DataFrame(new_content)
-    new_df.to_csv(saveFullPath, encoding='utf-8-sig', index=False)
-    new_review_df = pd.DataFrame(content['review_content'].dropna())
-    filename = 'clean_reviews.csv'
-    savePath = datePath + filename
+    # 텍스트만 추출해서 저장 (빈 값 제외)
+    new_review_df = content['review_content'].dropna().drop_duplicates()
+
+    filename = 'y_only_texts.csv'
+    savePath = os.path.join(targetPath, filename)
     new_review_df.to_csv(savePath, encoding='utf-8-sig', index=False, header=False)
-    duple_review = new_review_df.drop_duplicates()
-    filename = 'duple_reivews.csv'
-    savePath = datePath + filename
-    duple_review.to_csv(savePath, encoding='utf-8-sig', index=False, header=False)
 
 if __name__ == '__main__' :
     main()
