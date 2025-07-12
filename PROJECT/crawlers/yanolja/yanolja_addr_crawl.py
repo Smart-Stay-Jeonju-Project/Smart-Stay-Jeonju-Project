@@ -1,5 +1,3 @@
-# 250704 수집 완료
-
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import os
@@ -53,46 +51,42 @@ def load_links_from_file(fullPath):
 def get_accommodation_details(driver, links):
     if links :
         img_addrs = []
+        num=0
 
-        for link in links :
+        for link in links[:5] :
+            num+=1
+            driver.get(link)
+            time.sleep(7)
+            
+            soup = BeautifulSoup(driver.page_source, 'lxml')
+            
+
+            # 숙소 이름 가져오기
             try :
-                driver = initialze_driver()
-                driver.get(link)
-                time.sleep(7)
-                
-                soup = BeautifulSoup(driver.page_source, 'lxml')
-                
-
-                # 숙소 이름 가져오기
-                try :
-                    name = soup.select_one('div.css-11vo59c > h1').text
-                    print(name)
-                except Exception as e :
-                    print(f"숙소 이름을 가져오지 못했습니다.\n에러메세지 : {e}")
-                    continue
+                name = soup.select_one('div.css-11vo59c > h1').text
+                print(name)
+            except Exception as e :
+                print(f"숙소 이름을 가져오지 못했습니다.\n에러메세지 : {e}")
+                continue
 
 
-                # 숙소 상세주소 가져오기
-                try :
-                    ##domestic-pdp-info > div:nth-child(3) > section > div > div > div.css-cxbger > div.address.css-3ih6hc > span
-                    addr = soup.select_one('div.address.css-3ih6hc > span').text
-                    print(addr)
-                except Exception as e :
-                    print(f"숙소 주소를 가져오지 못했습니다.\n에러메세지 : {e}")
-                    continue
-                
-                
-                accom_addr = {'name':name, 'addr':addr}
+            # 숙소 상세주소 가져오기
+            try :
+                ##domestic-pdp-info > div:nth-child(3) > section > div > div > div.css-cxbger > div.address.css-3ih6hc > span
+                addr = soup.select_one('div.address.css-3ih6hc > span').text
+                print(addr)
+            except Exception as e :
+                print(f"숙소 주소를 가져오지 못했습니다.\n에러메세지 : {e}")
+                continue
+            
+            
+            accom_addr = {'name':name, 'addr':addr}
 
-                img_addrs.append(accom_addr)
-                print(accom_addr)
-                print(accom_addr['name'])
-                print(accom_addr['addr'])
-            except Exception as e:
-                print(f"[ERROR] 링크 접근 중 오류: {e}")
-            finally:
-                driver.quit()  # ▶ 크롬 종료
-                time.sleep(3)
+            img_addrs.append(accom_addr)
+            print(num)
+            print(accom_addr)
+            print(accom_addr['name'])
+            print(accom_addr['addr'])
 
         return img_addrs
     else :

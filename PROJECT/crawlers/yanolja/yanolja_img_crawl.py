@@ -49,54 +49,48 @@ def load_links_from_file(fullPath):
         return None
 
 # 숙소 상세 정보(이름, src) 크롤링
-def get_accommodation_details(links):
+def get_accommodation_details(driver, links):
     if links :
         img_src_links = []
 
-        for link in links :
+        for link in links[:] :
+            driver.get(link)
+            time.sleep(7)
+            
+            soup = BeautifulSoup(driver.page_source, 'lxml')
+            time.sleep(7)
+            
+            # 숙소 이름 가져오기
             try :
-                driver = initialze_driver()
-                driver.get(link)
-                time.sleep(7)
-                
-                soup = BeautifulSoup(driver.page_source, 'lxml')
-                time.sleep(7)
-                
-                # 숙소 이름 가져오기
-                try :
-                    name = soup.select_one('div.css-11vo59c > h1').text
-                    print(name)
-                except Exception as e :
-                    print(f"숙소 이름을 가져오지 못했습니다.\n에러메세지 : {e}")
-                    continue
-                
-                # 이미지 src 가져오기
-                try :
-                    img_tags = soup.select_one('div.swiper-slide-active > div > span > img')
-                    src = img_tags.get('src')
-                    print(src)
-                except Exception as e :
-                    print(f"이미지를 가져오지 못했습니다. {e}")
-                    src = ""
-                
-                img_src_link = {'name':name, 'src':src}
+                name = soup.select_one('div.css-11vo59c > h1').text
+                print(name)
+            except Exception as e :
+                print(f"숙소 이름을 가져오지 못했습니다.\n에러메세지 : {e}")
+                continue
+            
+            # 이미지 src 가져오기
+            try :
+                img_tags = soup.select_one('div.swiper-slide-active > div > span > img')
+                src = img_tags.get('src')
+                print(src)
+            except Exception as e :
+                print(f"이미지를 가져오지 못했습니다. {e}")
+                src = ""
+            
+            img_src_link = {'name':name, 'src':src}
 
-                img_src_links.append(img_src_link)
-                print(img_src_link)
-                print(img_src_link['name'])
-                print(img_src_link['src'])
+            img_src_links.append(img_src_link)
+            print(img_src_link)
+            print(img_src_link['name'])
+            print(img_src_link['src'])
 
-                # 실제 이미지 파일 저장
-                if save_img(img_src_links) :
-                    print("이미지 저장이 전부 완료되었습니다")
-                    save_img(img_src_links)
-                else :
-                    print("이미지 저장을 전부 완료하지 못했습니다")
-            except Exception as e:
-                print(f"[ERROR] 링크 접근 중 오류: {e}")
-            finally:
-                driver.quit()  # ▶ 크롬 종료
-                time.sleep(3)
+            # 실제 이미지 파일 저장
+            if save_img(img_src_links) :
+                print("이미지 저장이 전부 완료되었습니다")
+                save_img(img_src_links)
+            else :
+                print("이미지 저장을 전부 완료하지 못했습니다")
+
         return img_src_links
     else :
         return None
@@ -146,7 +140,7 @@ def main():
             return
         
          # 각 숙소의 이미지 정보를 수집하기
-        img_src_links = get_accommodation_details(links)
+        img_src_links = get_accommodation_details(driver, links)
         
         if img_src_links is None :
             print("이미지 정보 수집에 오류가 발생했습니다")

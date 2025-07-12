@@ -3,36 +3,42 @@
 {% block title %}메인 페이지{% endblock %}
 
 {% block contents %}
-    <h4>추천 숙소 리스트</h4>
-    <!-- 카테고리 선택 -->
-    <div class="category-list">
-        <!-- main 에서 정보를 받아 selected_category 에 selected 부여해서 강조 -->
-        {% for category in ['호텔', '모텔', '펜션'] %}
-            <a href="{{ url_for('main.main', category=category) }}"
-            class="category_item {% if selected_category == category %} selected {% endif %}">
-                {{ category }}
+    <h2>추천 숙소 리스트</h2>
+    <ul class="accommodation-list">
+        <li class="accommodation-card">
+            <a href="{{ url_for('result.on_result') }}">
+                <img src="{{ url_for('static', filename='images/recommend_list/1_전주비지니스호텔궁.jpg') }}" alt="전주 비지니스 호텔궁">
             </a>
-        {% endfor %}
-    </div>
-    <!-- 슬라이더 버튼 -->
-    <div class="slider_wrapper">
-        <button id="prev_btn" class="slider_btn">←</button>
-        <div class="slider_container">
-            <div class="slider_track" id="slider_track">
-                <!-- 카드에 result의 해당 숙소페이지로 이동링크 -->
-                {% for accommodation in accommodations %}
-                <div class="slider_card">
-                    <a href="{{ url_for('result.on_result', name=accommodation.name) }}">
-                        <img src="{{ accommodation.image_url }}" alt="{{ accommodation.name }}">
-                    </a>
-                    <h3>{{ accommodation.name }}</h3>
-                    <p>⭐ {{ accommodation.rating_score }}점 ({{ accommodation.formatted_rating_count }})</p>
-                    <p>{{ accommodation.address }}</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        <button id="next_btn" class="slider_btn">→</button>
-    </div>
-    <script src="{{ url_for('static', filename='js/slider_btn.js') }}"></script>
+            <h3><a href="{{ url_for('result.on_result') }}">전주 비지니스 호텔궁</a></h3>
+            <p>⭐ 9.2점 (761)</p>
+            <p>전주시 덕진구 금암동 700-3</p>
+        </li>
+
+        <li class="accommodation-card">
+            <a href="{{ url_for('result.on_result') }}">
+                <img src="{{ url_for('static', filename='images/recommend_list/2_글로스터호텔전주.jpg') }}" alt="글로스터 호텔 전주">
+            </a>
+            <h3><a href="{{ url_for('result.on_result') }}">글로스터 호텔 전주</a></h3>
+            <p>⭐ 9.1 (938)</p>
+            <p>전주시 완산구 고사동 1-2</p>
+        </li>
+
+        <li class="accommodation-card">
+            <a href="{{ url_for('result.on_result') }}">
+                <img src="{{ url_for('static', filename='images/recommend_list/3_신라스테이전주한옥마을.jpg') }}" alt="신라 스테이 전주 한옥마을">
+            </a>
+            <h3><a href="{{ url_for('result.on_result') }}">신라 스테이 전주 한옥마을</a></h3>
+            <p>⭐ 9.4점 (367)</p>
+            <p>전주시 완산구 경원동3가 72-2</p>
+        </li>
+
+        <li class="accommodation-card">
+            <a href="{{ url_for('result.on_result') }}">
+                <img src="{{ url_for('static', filename='images/recommend_list/4_전주투썸스테이-중화산점.jpg') }}" alt="전주 투썸 스테이 - 중화산점">
+            </a>
+            <h3><a href="{{ url_for('result.on_result') }}">전주 투썸 스테이 - 중화산점</a></h3>
+            <p>⭐ 9.6점 (367)</p>
+            <p>전주시 완산구 중화산동2가 657</p>
+        </li>
+    </ul>
 {% endblock %}

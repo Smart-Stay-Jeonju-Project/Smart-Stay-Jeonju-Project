@@ -1,4 +1,4 @@
-name,category,rating_score,rating_count,address,lat,lng
+name,category,ratring_score,ratring_count,address,Latitude,Longitude
 전주 비지니스 호텔 궁,모텔,9.2,761,전북특별자치도 전주시 덕진구 금암동 700-3,35.8350253,127.1314096
 글로스터호텔 전주,호텔비즈니스,9.1,938,전북특별자치도 전주시 완산구 고사동 1-2,35.8223482,127.1449563
 신라스테이 전주 한옥마을,호텔비즈니스,9.4,367,전북특별자치도 전주시 완산구 경원동3가 72-2,35.8196908,127.1485428

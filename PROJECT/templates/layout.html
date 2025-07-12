@@ -9,32 +9,26 @@
     <body>
         <!-- 로고 -->
         <p>
-            <!-- 홈으로 -->
-            <!--('blueprint이름.함수이름') -->
             <a href="{{ url_for('main.main') }}">
-                <!-- 로고 이미지 -->
                 <img src="{{url_for('static', filename='/images/logo.jpg')}}" height="100" width="100">
             </a>
         </p>
         <!-- 제목 -->
         <p>
-            <!-- 홈으로 -->
             <a href="{{ url_for('main.main') }}">
                 <h2> 전주 어때 </h2>
             </a>
         </p>
         <!-- 검색 메뉴 -->
         <form action="{{url_for('main.search')}}" method="get">
-            <!-- get방식으로 main의 search 함수로 이동 -->
             <div class="">
-                <label for="search_type" class="form_label">검색 메뉴</label>
+                <label for="search_type" class="form-label">검색 메뉴</label>
                 <select name="search_type" id="search_type" class="">
                     <option value="name" {% if search_type == 'name' %}selected{% endif %}>상호명</option>
                     <option value="keyword" {% if search_type == 'keyword' %}selected{% endif %}>키워드</option>
                     <option value="address" {% if search_type == 'address' %}selected{% endif %}>주소</option>
                     <option value="sentence" {% if search_type == 'sentence' %}selected{% endif %}>문장</option>
                 </select>
-                <!-- 키워드 선택 시 선택 가능한 키워드 표시 -->
                 <div id="keywordList" style="display: none; margin-top: 10px;">
                     {% block keyword_title %}
                     <strong>키워드를 선택하세요 : </strong>
@@ -42,19 +36,14 @@
                     <ul id="keywordUI">
                         {% for keyword in keyword_list %}
                         <li>
-                            <!-- 키워드 목록을 출력 + 선택된 키워드 강조 -->
-                            <a href="{{ url_for('main.search') }}?search_type=keyword&search_term={{ keyword }}"
-                                {% if keyword == search_term %}
-                                    style="background-color: #ffdddd; font-weight: bold; color: red;"
-                                {% endif %}>
-                                {{ keyword }}
+                            <a href="{{ url_for('main.search') }}?search_type=keyword&search_term={{ keyword }}">
+                            {{ keyword }}
                             </a>
                         </li>
                         {% endfor %}
                     </ul>
                 </div>
                 <script src="{{ url_for('static', filename='js/keyword_select.js') }}"></script>
-                <!-- 주소 선택 시 입력 받는 데이터 제한 -->
                 <div>
                     <p id="addressHint" style="color: red; display: none;">
                         ※ '덕진구' 또는 '완산구'를 입력해주세요.
@@ -62,22 +51,22 @@
                     <script src="{{ url_for('static', filename='js/address_select.js') }}"></script>
                 </div>
             </div>
-            <!-- 검색바 + 자동완성기능 + 이전검색어 유지 -->
-            <div class="autocomplete_wrapper" id="autocomplete_wrapper">
+            <!-- 검색바 -->
+            <div class="">
                 <label for="search_term" class="">검색어 입력</label>
                 <input type="text" name="search_term" id="search_term" class="" placeholder="검색어를 입력하세요" maxlength="255" 
-                 value="{{ search_term | default('') }}" required>
+                value="{{ search_term | default('') }}" required>
             </div>
             <!-- 검색버튼 -->
             <div class="">
-                <button type="submit" class="btn btn_primary">검색</button>
+                <button type="submit" class="btn btn-primary">검색</button>
             </div>
         </form>
         <div class="container">
         {# flash에 저장된 내용을 출력 #}
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <ul class="flash_messages">
+                <ul class="flash-messages">
                     {% for category, message in messages %}
                     <li class="{{category}}" >{{message}}</li>
                     {% endfor %}
@@ -91,18 +80,5 @@
             <button id="scrollTopBtn" title="맨 위로 이동">&#8679;</button>
             <script src="{{ url_for('static', filename='js/upbtn.js') }}"></script>
         </footer>
-        <script src="{{ url_for('static', filename='js/autocomplete.js') }}"></script>
-        <!-- search_type 변경 시 검색어 초기화 되는 이벤트 리스너 -->
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const searchTypeSelect = document.getElementById("search_type");
-                const searchInput = document.getElementById("search_term");
-
-                // 검색 타입 바뀔때 검색어 초기화
-                searchTypeSelect.addEventListener("change", function () {
-                    searchInput.value = ""; 
-                });
-            });
-        </script>
     </body>
 </html>

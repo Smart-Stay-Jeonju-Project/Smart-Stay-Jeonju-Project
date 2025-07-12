@@ -3,7 +3,11 @@ from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import time
 import os
-import math
+
+# HTTP 요청 시 사용할 헤더 
+agent_head = {
+    "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+}
 
 # URL에 보낼 Parameter 설정
 KEYWORD = '전주'
@@ -37,16 +41,16 @@ def maxPage(driver) :
     soup = BeautifulSoup(driver.page_source, 'lxml')
     try :
         total_text = ".css-1psit91 h1"
-        MaxNum_tag = soup.select_one(total_text).text
-        MaxNum = str(MaxNum_tag).replace(',','')
-        MaxNum = ''.join([c for c in MaxNum if c.isdigit()])
+        # 끝에서 3자리 추출
+        MaxNum = soup.select_one(total_text).text[-4:-1]
         time.sleep(2)
 
         # 가져온 숫자를 정수로 변환하기
         totalNum = int(MaxNum)
+
         # 페이지 수 = ( 총 숙소 수 / 한 페이지 숙소 수 )
-        # 결과 : 19.5 로, 20페이지가 나오도록 반올림하는 함수 : math.ceil() 사용
-        page_count = math.ceil ( totalNum / PAGE_LIST_LENGTH )
+        # 결과 : 19.5 로, 20페이지가 나오도록 반올림하는 함수 : round() 사용
+        page_count = round( totalNum / PAGE_LIST_LENGTH )
         return page_count
     except Exception as e :
         print(f"페이지 수를 계산하지 못했습니다 {e}")
