@@ -8,8 +8,8 @@ agent_head ={
     "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
 }
 
-targetPath = "PROJECT/DATA/LIST/"
-imgTargetPath = "PROJECT/DATA/imgs/"
+targetPath = "DATA/RAW/LINKS/"
+imgTargetPath = "DATA/RAW/imgs/"
 linkFilename = "여기어때_link.txt"
 imgCSVFilename = "이미지_저장경로.csv"
 
@@ -67,8 +67,7 @@ def get_accommodation_details(driver, links):
             
             # 이미지 파일 이름 : "순번_숙소이름.jpg"
             img_name = name.replace(' ','')
-            index += 1
-            imgs = {'name' : f"{index}_{img_name}", 'src' : src}
+            imgs = {'name' : f"{img_name}", 'src' : src}
             img_src_link.append(imgs)
 
             # 20개 단위로 중간 저장
@@ -83,7 +82,7 @@ def get_accommodation_details(driver, links):
 # 이미지 저장 리스트 csv 파일 불러오기
 def load_img_list():
     img_list = []
-    filename = "이미지_저장경로.csv"
+    filename = "yeogi_img_src_links.csv"
     fullPath = targetPath + filename
     df = pd.read_csv(fullPath)
     
@@ -143,24 +142,24 @@ def main():
         fullPath = targetPath + linkFilename
     
         # 여기어때_link.txt 에서 url 불러오기
-        links = load_links_from_file(fullPath)
+        # links = load_links_from_file(fullPath)
 
-        if links is None :
-            print("url을 가져올 수 없습니다")
-            driver.close()
-            return
+        # if links is None :
+        #     print("url을 가져올 수 없습니다")
+        #     driver.close()
+        #     return
         
-        # 각 숙소의 이미지 정보를 수집하기
-        img_links = get_accommodation_details(driver, links)
+        # # 각 숙소의 이미지 정보를 수집하기
+        # img_links = get_accommodation_details(driver, links)
         
-        if img_links is None :
-            print("이미지 정보 수집에 오류가 발생했습니다")
-        else :
-            # 이미지 저장 경로 파일 저장 ( 숙소 이름 , 이미지 src )
-            if save_img_list(img_links) :
-                print("이미지 저장 경로를 저장하였습니다")
-            else :
-                print("이미지 저장 경로를 저장하지 못하였습니다")
+        # if img_links is None :
+        #     print("이미지 정보 수집에 오류가 발생했습니다")
+        # else :
+        #     # 이미지 저장 경로 파일 저장 ( 숙소 이름 , 이미지 src )
+        #     if save_img_list(img_links) :
+        #         print("이미지 저장 경로를 저장하였습니다")
+        #     else :
+        #         print("이미지 저장 경로를 저장하지 못하였습니다")
         
         # 이미지 저장 경로 파일 불러오기
         img_list = load_img_list()

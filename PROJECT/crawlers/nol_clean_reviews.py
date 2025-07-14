@@ -26,7 +26,7 @@ def delete_none_data(reviews):
     content = content.dropna(subset=['source'], how='any', axis=0)
     content['text'] = (
             content['text']
-            .str.replace(r"[^가-힣0-9 ]", "", regex=True)
+            .str.replace(r"[^가-힣 ]", "", regex=True)
             .str.replace(r"\u200b", '', regex=True)
             .str.replace(r'\s+', ' ', regex=True)
             .str.strip()
