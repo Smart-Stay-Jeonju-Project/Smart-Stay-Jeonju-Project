@@ -21,7 +21,7 @@ def on_search() :
     df = pd.read_csv(csv_path, encoding='utf-8')
     df = df[['name', 'address', 'lat', 'lng']].dropna()
 
-    print("search.py API_KEY:", current_app.config.get("API_KEY"))
+    # print("search.py API_KEY_MAPS:", current_app.config.get("API_KEY_MAPS"))
 
     # 숙소 리스트를 딕셔너리로
     accommodations = df.to_dict(orient='records')
@@ -36,5 +36,5 @@ def on_search() :
         search_term=search_term,
         accommodations=accommodations,
         result=f"검색 결과 {len(accommodations)}건",
-        google_maps_api_key=current_app.config['API_KEY']
+        google_maps_api_key=current_app.config['API_KEY_MAPS']
     )

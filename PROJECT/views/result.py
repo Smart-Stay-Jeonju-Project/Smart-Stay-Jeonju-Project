@@ -34,5 +34,5 @@ def on_result() :
         'result.html',
         accommodation=row,
         search_term=name,
-        google_maps_api_key=current_app.config['API_KEY']
+        google_maps_api_key=current_app.config['API_KEY_MAPS']
     )
