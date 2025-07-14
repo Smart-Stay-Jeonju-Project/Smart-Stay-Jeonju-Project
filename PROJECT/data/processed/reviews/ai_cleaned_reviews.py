@@ -10,8 +10,10 @@ from google.genai import types
 load_dotenv()
 API_KEY_AI = os.getenv("API_KEY_AI").split(",")
 
-INPUT_CSV_PATH = "n_cleaned_review_texts.csv"
-OUTPUT_CSV_PATH = "n_ai_cleaned_reviews.csv"
+INPUT_CSV_PATH = "y_only_texts.csv"
+OUTPUT_CSV_PATH = "y_ai_cleaned_reviews.csv"
+# INPUT_CSV_PATH = "n_cleaned_review_texts.csv"
+# OUTPUT_CSV_PATH = "n_ai_cleaned_reviews.csv"
 
 current_api_index = 0
 
