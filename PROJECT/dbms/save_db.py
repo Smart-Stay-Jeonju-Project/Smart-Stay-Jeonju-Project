@@ -9,7 +9,7 @@ load_dotenv()
 # DMB 객체 생성
 dbm = DBManager()
 
-targetPath = "crawlers/yanolja/LIST/"
+targetPath = "project/data/processed/reviews/"
 filename = "N_clean_info_dupl_test.csv"
 
 fullPath = targetPath + filename
@@ -50,9 +50,10 @@ def save_accom():
         print(e)
 
 
+# 원본 숙소 정보 저장
 def save_accom_source():
     filename = "clean_yeogi_info.csv"
-    #filename = "N_clean_info_jeonju.csv"
+    #filename = "y_duple_filtered_up.csv"
     fullPath = targetPath + filename
     accom_list = pd.read_csv(fullPath)
     print(accom_list)
@@ -98,11 +99,19 @@ def save_accom_source():
 
 # 리뷰csv의 숙소명과 숙소 테이블의 숙소명 매칭하여 저장
 def save_review():
-    filename = "N_cleaned_reviews_full_fin_test.csv"
+    filename = "n_duple_filtered_up_replace_source.csv"
     fullPath = targetPath + filename
     # 리뷰 파일 불러오기
     review_list = pd.read_csv(fullPath)
+    
+    #nan can not be used with MySQL
+    # 원인 : 데이터프레임에 빈 값이 NaN으로 채워져 있는데, 이 부분을 MySQL에 넣어주면서 오류 발생
+    # 시도 : 해당 값을 None으로 변경. MySQL에는 NULL 값으로 들어감.
+    # 해결 : not null 삭제
+    review_list = review_list.where(pd.notnull(review_list), None)
+
     #print(review_list)
+
     try : 
         dbm.DBOpen(os.getenv('DBHOST'), os.getenv('DBNAME'), os.getenv('ID'), os.getenv('PW'))
         sql = 'SELECT accommodation_id, name FROM accommodations'
@@ -126,10 +135,12 @@ def save_review():
                 print(f"숙소명 '{accom_name}'을(를) 숙소테이블에서 찾을 수 없습니다. 건너뜁니다.")
                 continue
 
+            #insert into -> replace into 로 변경
+            #매일 바뀌는 데이터 값을 덮어쓰기 해줘야 하기 때문에
             sql =  """
                 INSERT INTO review
-                (accommodation_id, content, write_date, review_rating, review_source, nickname)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                (accommodation_id, content, write_date, review_rating, review_source, review_type, nickname, clean_reviews)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 """
             params = (
                 accommodation_id,
@@ -137,7 +148,9 @@ def save_review():
                 review['write_date'], 
                 review['review_rating'], 
                 review['source'], 
-                review['nickname'])
+                review['type'], 
+                review['nickname'], 
+                review['clean_reviews'])
             
             if not dbm.RunSQL(sql, params):
                 print(f"저장 실패한 숙소명: {accom_name}")
@@ -155,7 +168,7 @@ if __name__ == "__main__":
     #save_accom()
 
     # 숙소 원본 데이터 저장
-    save_accom_source()
+    #save_accom_source()
 
     # 리뷰 저장
-    #save_review()
+    save_review()
