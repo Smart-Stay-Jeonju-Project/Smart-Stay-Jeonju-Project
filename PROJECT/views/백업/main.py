@@ -161,7 +161,6 @@ def search() :
                 google_maps_api_key=current_app.config['API_KEY_MAPS']
             )
         else:
-            flash("일치하는 자료가 없습니다. 다시 검색해주세요.", "error")
             return redirect('/')
 
     except Exception as e:
