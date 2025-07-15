@@ -8,7 +8,8 @@ load_dotenv()
 def create_app() :
     app = Flask(__name__)
 
-    app.config['API_KEY'] = os.getenv("API_KEY")
+    app.config['API_KEY_MAPS'] = os.getenv("API_KEY_MAPS")
+    app.config['API_KEY_AI'] = os.getenv("API_KEY_AI")
     app.secret_key = config.SECRET_KEY
     # print("API_KEY from .env:", os.getenv("API_KEY"))
     app.register_blueprint(main.bp)

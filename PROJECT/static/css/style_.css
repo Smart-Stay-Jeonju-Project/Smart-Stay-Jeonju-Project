@@ -1,0 +1,229 @@
+/* 기본 바디 스타일 */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+/* 루트 변수 */
+:root {
+  --main-color: rgb(255, 87, 38);         /* 주 색상 */
+  --main-color-hover: rgb(230, 70, 25);   /* hover 시 색상 */
+  --text-color: #333;
+  --background-color: #f9fafb;
+}
+
+/* 제목 */
+h4 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+/* 카테고리 필터 */
+.category-list {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.category_item {
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  color: var(--text-color);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+
+.category_item:hover {
+  background-color: #efefef;
+}
+
+.category_item.selected {
+  background-color: var(--main-color);
+  color: white;
+  border-color: var(--main-color);
+}
+
+/* 슬라이더 전체 래퍼 */
+.slider_wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 0 40px;
+}
+
+/* 좌/우 버튼 */
+.slider_btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  padding: 8px 12px;
+  z-index: 10;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#prev_btn {
+  left: 10px;
+}
+
+#next_btn {
+  right: 10px;
+}
+
+.slider_btn:hover {
+  background-color: var(--main-color-hover);
+  color: white;
+}
+
+/* 슬라이더 컨테이너 */
+.slider_container {
+  overflow: hidden;
+  width: 100%;
+}
+
+.slider_track {
+  display: flex;
+  transition: transform 0.3s ease;
+  gap: 20px;
+}
+
+/* 카드 스타일 */
+.slider_card {
+  min-width: 250px;
+  max-width: 250px;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  padding-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.slider_card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
+}
+
+.slider_card h3 {
+  margin: 12px 0 6px;
+  font-size: 1.1rem;
+  color: var(--main-color);
+}
+
+.slider_card p {
+  margin: 4px 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* 버튼 스타일 (예: 검색 버튼 등) */
+.btn_primary {
+  background-color: var(--main-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.btn_primary:hover {
+  background-color: var(--main-color-hover);
+}
+
+/* 검색 결과 페이지 - 지도와 리스트 레이아웃 */
+#map-wrapper {
+  display: flex;
+  gap: 20px;
+  margin: 20px auto;
+  max-width: 1200px;
+  height: 500px; /* 지도+리스트 전체 높이 */
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* 지도 영역 */
+#map {
+  flex: 2;
+  min-width: 0; /* flex item 깨짐 방지 */
+  height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 리스트 패널 */
+#list-panel {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 10px 15px;
+  box-sizing: border-box;
+}
+
+/* 숙소 리스트 */
+#accommodation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 리스트 아이템 기본 스타일 */
+#accommodation-list > div {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#accommodation-list > div:hover {
+  background-color: var(--main-color);
+  color: white;
+  border-radius: 6px;
+}
+
+/* 검색 폼 레이아웃 */
+form {
+  max-width: 600px;
+  margin: 20px auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+input#search_term {
+  flex-grow: 1;
+  min-width: 200px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+select#search_type {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}

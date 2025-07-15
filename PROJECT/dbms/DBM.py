@@ -9,7 +9,7 @@ class DBManager :
 
     def DBOpen(self, host, dbname, id, pw) : # DBMS 연결 메소드
         try :
-            self.con = pymysql.connect( host=host, user=id, password=pw, db=dbname, charset='utf8', cursorclass=pymysql.cursors.DictCursor )
+            self.con = pymysql.connect( host=host, db=dbname, user=id, password=pw, charset='utf8', cursorclass=pymysql.cursors.DictCursor )
             return True
         except Exception as e :
             print(e)
@@ -40,7 +40,8 @@ class DBManager :
     # sql문 실행 메소드
     # 데이터 가져오는 메소드
     # 연결을 종료하는 메소드
-    def OpenQuery(self, sql, datas) :
+    # 조건없는 데이터를 받기 위해 datas=None 
+    def OpenQuery(self, sql, datas=None) :
         print(f"SQL : {sql}")
         try :
             self.cursor = self.con.cursor()

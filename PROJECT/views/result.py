@@ -1,38 +1,44 @@
 from flask import Blueprint, request, render_template, flash, redirect, current_app
 import os
+from dotenv import load_dotenv
+load_dotenv()
 import pandas as pd
 from utils.filename import get_image_url
+from dbms.result_Service import result_accom
+
 
 bp = Blueprint('result', __name__, url_prefix='/result')
+google_maps_api_key = os.getenv('GOOGLE_MAPS_API_KEY')
+print('API KEY:', google_maps_api_key)
 
-# result.html 숙소정보 제공
+# result.html에서 검색 타입, 검색 결과 제공
 @bp.route('/', methods=['GET'])
-def on_result() :
-    name = request.args.get('name', '').strip()
-    # print(f"[DEBUG] 요청된 name: {name}")
+def on_result():
+    search_type = request.args.get('search_type', '').strip()
+    search_term = request.args.get('search_term', '').strip()
 
-    csv_path = os.path.join('data', 'tmp', 'practice.csv')
-    df = pd.read_csv(csv_path, encoding='utf-8')
+    name = request.args.get('name', '').strip()  # 숙소명
+    #print(name)
+    datas, r_datas, k_datas = result_accom(name)
+    print('datas:',type(datas))      # dict
+    #print('r_datas:',r_datas)        # list
+    print("r_datas:",type(r_datas))     # list
+    #print('k_datas:',k_datas)     # dict
 
-    # print("[DEBUG] CSV 로드 완료. 행 개수:", len(df))
+    try:
+        if not datas :
+            flash("해당 숙소 정보를 찾을 수 없습니다.", "error")
+            return redirect('/')
+        else : 
+            return render_template(
+                'result.html',
+                result_accommodation=datas,
+                result_review=r_datas,
+                result_keyword=k_datas,
+                search_type=search_type,
+                search_term=search_term,
+                google_maps_api_key=google_maps_api_key
+        )
+    except Exception as e:
+        print(e)
 
-    matched = df[df['name'].astype(str).str.strip() == name]
-    # print("[DEBUG] 매칭된 행 개수:", len(matched))
-    if matched.empty :
-        flash("해당 숙소 정보를 찾을 수 없습니다.", "error")
-        return redirect('/')
-
-    # 숙소 정보 딕셔너리
-    row = matched.iloc[0].to_dict()
-    # 이미지 경로 추가
-    row['image_url'] = get_image_url(row['name'])
-
-    # print(">>> lat:", row.get('lat'), "lng:", row.get('lng'))
-    # print(">>> type:", type(row.get('lat')), type(row.get('lng')))
-
-    return render_template(
-        'result.html',
-        accommodation=row,
-        search_term=name,
-        google_maps_api_key=current_app.config['API_KEY']
-    )
