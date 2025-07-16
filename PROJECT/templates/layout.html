@@ -5,30 +5,31 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     </head>
     <body>
-        <!-- 로고 -->
-        <p>
-            <a href="{{ url_for('main.main') }}">
-                <!--<img src="{{url_for('static', filename='/images/logo.jpg')}}" height="100" width="100">-->
-            </a>
-        </p>
         <!-- 제목 -->
-        <p>
-            <a href="{{ url_for('main.main') }}">
-                <h2> 전주 어때 </h2>
-            </a>
-        </p>
+        <h2>
+            <a href="{{ url_for('main.main') }}" class="title-link">전주 어때</a>
+        </h2>
         <!-- 검색 메뉴 -->
-        <form action="{{url_for('main.search')}}" method="get">
-            <div class="">
-                <label for="search_type" class="form_label">검색 메뉴</label>
-                <select name="search_type" id="search_type" class="">
+        <section class="search_section">
+            <form action="{{url_for('main.search')}}" method="get" class="search_box">
+                <select name="search_type" id="search_type">
                     <option value="name" {% if search_type == 'name' %}selected{% endif %}>상호명</option>
                     <option value="keyword" {% if search_type == 'keyword' %}selected{% endif %}>키워드</option>
                     <option value="address" {% if search_type == 'address' %}selected{% endif %}>주소</option>
                     <option value="sentence" {% if search_type == 'sentence' %}selected{% endif %}>문장</option>
                 </select>
+                <!-- 검색바 -->
+                <div class="autocomplete_wrapper">
+                    <input type="text" name="search_term" id="search_term" placeholder="검색어를 입력하세요" maxlength="255" 
+                    value="{{ search_term | default('') }}" required>
+                </div>
+                <!-- 검색버튼 -->
+                <button type="submit" class="btn btn_primary">
+                    <i class="fas fa-search fa-lg"></i>
+                </button>
                 <!-- 키워드 선택 시 선택 가능한 키워드 표시 -->
                 <div id="keywordList" style="display: none; margin-top: 10px;">
                     {% block keyword_title %}
@@ -55,18 +56,8 @@
                     </p>
                     <script src="{{ url_for('static', filename='js/address_select.js') }}"></script>
                 </div>
-            </div>
-            <!-- 검색바 -->
-            <div class="autocomplete_wrapper" id="autocomplete_wrapper">
-                <label for="search_term" class="">검색어 입력</label>
-                <input type="text" name="search_term" id="search_term" class="" placeholder="검색어를 입력하세요" maxlength="255" 
-                 value="{{ search_term | default('') }}" required>
-            </div>
-            <!-- 검색버튼 -->
-            <div class="">
-                <button type="submit" class="btn btn_primary">검색</button>
-            </div>
-        </form>
+            </form>
+        </section>
         <div class="container">
         {# flash에 저장된 내용을 출력 #}
         {% with messages = get_flashed_messages(with_categories=true) %}
