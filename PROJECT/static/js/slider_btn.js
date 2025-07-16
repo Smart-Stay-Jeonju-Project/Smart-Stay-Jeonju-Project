@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const sliderCards = document.querySelectorAll(".slider_card");      // 각 개체의 카드들
     const slideWidth = sliderCards[0].offsetWidth;                      // 각 카드 너비
     const totalSlides = sliderCards.length;                             // 총 슬라이드 개수
+    const cardGap = 20;
+    const sliderStep = slideWidth + cardGap;
 
     // 다음 버튼이랑 이전버튼
     const nextBtn = document.getElementById("next_btn");
@@ -25,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if ((currentSlide + slidesToShow) < totalSlides) {
             currentSlide++;
             // 슬라이더 트랙을 왼쪽으로 이동시켜 슬라이드 효과
-            sliderTrack.style.transform = `translateX(-${slideWidth * currentSlide}px)`; 
+            sliderTrack.style.transform = `translateX(-${sliderStep * currentSlide}px)`; 
             updateButtons();
         }
     });
@@ -34,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
     prevBtn.addEventListener("click", () => {
         if (currentSlide > 0) {
             currentSlide--;
-            sliderTrack.style.transform = `translateX(-${slideWidth * currentSlide}px)`;
+            sliderTrack.style.transform = `translateX(-${sliderStep * currentSlide}px)`;
             updateButtons();
         }
     });
