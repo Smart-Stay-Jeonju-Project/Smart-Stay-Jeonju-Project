@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const typeSelect = document.getElementById('search_type');
 
     // 자동완성 결과를 보여줄 <ul> 요소를 생성하고, input의 부모 요소에 추가
+    const wrapper = input.closest('.autocomplete_wrapper');
     const suggestionBox = document.createElement('ul');
     suggestionBox.classList.add('autocomplete_box');    // 스타일 위한 클래스 지정
     input.parentNode.appendChild(suggestionBox);    // input 아래에 자동완성 기능 붙이기

@@ -42,7 +42,8 @@
     <script>
         const searchTerm = "{{ search_term }}";  // Flask에서 넘긴 검색어를 JS 변수로 사용
     </script>
-    <p>{{ result }}</p>
+    <!-- 지도 위에 검색결과 문구 출력 -->
+    <div id="search_result_summary">{{ result }}</div>
     <!-- 지도 -->
     <div id="map-wrapper">
         <div id="map" ></div>
