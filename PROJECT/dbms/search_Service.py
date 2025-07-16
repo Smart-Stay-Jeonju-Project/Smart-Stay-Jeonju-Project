@@ -53,7 +53,8 @@ def accommodations_list(search_type, search_term):
                 sql = '''
                     SELECT DISTINCT a.*
                     FROM accommodations a
-                    JOIN review r ON a.accommodation_id = r.accommodation_id
+                    join accom_source s ON a.accommodation_id = s.accommodation_id
+                    JOIN review r ON s.source_id = r.source_id
                     JOIN keywords k ON r.review_id = k.review_id
                     WHERE k.keyword_text = %s
                     ORDER BY a.rating DESC;

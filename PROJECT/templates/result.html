@@ -63,7 +63,9 @@
         <div>
             <h3>AI 요약 리포트</h3>
             {% if result_accommodation.report_text %}
-                <p>{{ result_accommodation.report_text }}</p>
+                <!--<p>{{ result_accommodation.report_text }}</p>-->
+                <!--result_service에서 가져온 리포트 내용 분류 \n 를 <br>로 바꿔줌-->
+                <p>{{ result_accommodation.report_text | replace('\n', '<br>') | safe }} </p>
             {% else %}
                 <p>AI 요약 리포트가 생성되지 않았습니다</p>
             {% endif %}
