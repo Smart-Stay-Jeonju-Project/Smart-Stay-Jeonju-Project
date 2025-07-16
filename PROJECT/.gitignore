@@ -1,1 +1,7 @@
 .env
+*.pkl
+*.pickle
+*.h5
+*.keras
+*.pt
+*.safetensors
