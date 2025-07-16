@@ -40,17 +40,20 @@ def result_accom(name):
 
             # 숙소별 리뷰 최신순으로 조회
             sql = '''SELECT 
-                        a.name,
-                        r.content,
+                    a.name,
+                        r.clean_reviews,
                         r.write_date,
                         r.review_rating,
                         r.review_source,
                         r.review_type,
                         r.nickname
                     FROM accommodations a
-                    JOIN review r ON a.accommodation_id = r.accommodation_id
+                    join accom_source s on a.accommodation_id = s.accommodation_id
+                    JOIN review r ON s.source_id = r.source_id
                     WHERE a.name = %s
-                    ORDER BY r.write_date DESC;'''
+                    ORDER BY r.write_date DESC
+                    limit 10;'''
+            
             dbm.OpenQuery(sql, (name,))
             r_total = dbm.GetTotal()
             if r_total > 0 :
@@ -70,11 +73,13 @@ def result_accom(name):
             sql = '''SELECT k.keyword_text, SUM(k.keyword_score) AS total_score
                     FROM keywords k
                     JOIN review r ON k.review_id = r.review_id
-                    JOIN accommodations a ON r.accommodation_id = a.accommodation_id
+                    JOIN accom_source s ON r.source_id = s.source_id
+                    JOIN accommodations a ON s.accommodation_id = a.accommodation_id
                     WHERE a.name = %s
                     GROUP BY k.keyword_text
                     ORDER BY total_score DESC
                     LIMIT 5;'''
+            
             dbm.OpenQuery(sql, (name,))
             k_total = dbm.GetTotal()
             if k_total > 0 :

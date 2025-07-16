@@ -99,7 +99,7 @@ def save_accom_source():
 
 # 리뷰csv의 숙소명과 숙소 테이블의 숙소명 매칭하여 저장
 def save_review():
-    filename = "n_duple_filtered_up_replace_source.csv"
+    filename = "y_duple_filtered_up_0716.csv"
     fullPath = targetPath + filename
     # 리뷰 파일 불러오기
     review_list = pd.read_csv(fullPath)
@@ -114,14 +114,15 @@ def save_review():
 
     try : 
         dbm.DBOpen(os.getenv('DBHOST'), os.getenv('DBNAME'), os.getenv('ID'), os.getenv('PW'))
-        sql = 'SELECT accommodation_id, name FROM accommodations'
+        #sql = 'SELECT accommodation_id, name FROM accommodations'
+        sql = 'SELECT source_id, source_name FROM accom_source'
         dbm.OpenQuery(sql,)
 
         datas = dbm.GetDatas()
 
         # (숙소테이블)datas 리스트를 한 행씩(row) 반복하면서,
         # 각 행에서 'name'을 키(key)로, 'accommodation_id'를 값(value)으로 하는 딕셔너리 생성
-        name_to_id = {row['name']: row['accommodation_id'] for row in datas}
+        name_to_id = {row['source_name']: row['source_id'] for row in datas}
     
         
         for _, review in review_list.iterrows():  # <- 수정: iterrows() 사용
@@ -129,28 +130,51 @@ def save_review():
             accom_name = review['name']
 
             # 숙소명이 딕셔너리에 있는지 확인
-            accommodation_id = name_to_id.get(accom_name)
+            #accommodation_id = name_to_id.get(accom_name)
+            source_id = name_to_id.get(accom_name)
 
-            if accommodation_id is None:
+            #if accommodation_id is None:
+            if source_id is None:
                 print(f"숙소명 '{accom_name}'을(를) 숙소테이블에서 찾을 수 없습니다. 건너뜁니다.")
                 continue
+            
+            #중복데이터 제외
+            check_sql = """
+                SELECT 1 FROM review
+                WHERE source_id = %s
+                AND content = %s
+                AND write_date = %s
+                AND review_rating = %s
+                AND review_source = %s
+                AND review_type = %s
+                AND nickname = %s
+                AND clean_reviews = %s
+                LIMIT 1
+            """
+            params = (
+                source_id,
+                review['text'],
+                review['write_date'],
+                review['rating'],
+                review['source'],
+                review['type'],
+                review['nickname'],
+                review['clean_reviews']
+            )
 
-            #insert into -> replace into 로 변경
-            #매일 바뀌는 데이터 값을 덮어쓰기 해줘야 하기 때문에
+            dbm.OpenQuery(check_sql, params)
+            exists = dbm.GetDatas()
+            dbm.CloseQuery()
+
+            if exists:
+                print(f"중복된 리뷰가 있어 건너뜀: 숙소명 {accom_name}")
+                continue
+
             sql =  """
                 INSERT INTO review
-                (accommodation_id, content, write_date, review_rating, review_source, review_type, nickname, clean_reviews)
+                (source_id, content, write_date, review_rating, review_source, review_type, nickname, clean_reviews)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 """
-            params = (
-                accommodation_id,
-                review['text'],
-                review['write_date'], 
-                review['review_rating'], 
-                review['source'], 
-                review['type'], 
-                review['nickname'], 
-                review['clean_reviews'])
             
             if not dbm.RunSQL(sql, params):
                 print(f"저장 실패한 숙소명: {accom_name}")

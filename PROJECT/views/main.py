@@ -161,7 +161,6 @@ def search():
                     result=f"'{search_term}' 검색 결과 {accom_result['total']}건"
                 )
             else:
-                flash("일치하는 자료가 없습니다. 다시 검색해주세요.", "error")
                 return redirect('/')
     
     except Exception as e:
