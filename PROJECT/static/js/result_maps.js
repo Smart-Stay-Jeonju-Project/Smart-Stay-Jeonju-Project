@@ -1,7 +1,7 @@
 // result.html에 단일 마커
 
 function initMap() {
-    const accommodation = window.accommodation;
+    const accommodation = result_accommodation || [];
     // 숙소 정보 확인
     if (!accommodation) {
         console.error("accommodation 정보가 없습니다.");
@@ -9,14 +9,14 @@ function initMap() {
     }
 
     // 페이지에는 accommodation.lat&accommodation.lat이 출력되는데 콘솔에는 오류가 발생하면 Number로 지정
-    const lat = accommodation.lat;
-    const lng = accommodation.lng;
+    const lat = accommodation.latitude;
+    const lng = accommodation.longitude;
     // const lat = Number(accommodation.lat);
     // const lng = Number(accommodation.lng);
 
     // lat 과 lng 확인
     if (isNaN(lat) || isNaN(lng)) {
-        console.error("유효하지 않은 위도/경도 값입니다.", accommodation.lat, accommodation.lng);
+        console.error("유효하지 않은 위도/경도 값입니다.", accommodation.latitude, accommodation.longtitude);
         return;
     }
 

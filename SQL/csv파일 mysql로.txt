@@ -1,0 +1,49 @@
+import pandas as pd
+import mysql.connector
+
+# DB 연결
+conn = mysql.connector.connect(
+    host="localhost",
+    user="your_user",
+    password="your_password",
+    database="your_database",
+    charset='utf8mb4'
+)
+cursor = conn.cursor()
+
+# 1. 숙소명 → 숙소ID 매핑
+cursor.execute("SELECT accommodation_id, name FROM accommodations")
+rows = cursor.fetchall()
+name_to_id = {name.strip(): acc_id for acc_id, name in rows}
+
+# 2. 리뷰 CSV 불러오기
+review_df = pd.read_csv('review.csv')
+
+# 3. 숙소명으로 숙소 ID 매핑
+review_df['accommodation_id'] = review_df['숙소명'].map(name_to_id)
+
+# 4. 매칭 실패 숙소명 확인
+unmatched = review_df[review_df['accommodation_id'].isnull()]
+if not unmatched.empty:
+    print("⚠️ 다음 숙소명은 매칭되지 않았습니다:")
+    print(unmatched['숙소명'].unique())
+
+# 5. INSERT 수행 (review_id는 생략!)
+for _, row in review_df.dropna(subset=['accommodation_id']).iterrows():
+    sql = """
+    INSERT INTO review 
+    (accommodation_id, content, write_date, review_rating, review_source, review_type, nickname)
+    VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """
+    cursor.execute(sql, (
+        int(row['accommodation_id']),
+        row['content'],
+        row['write_date'],
+        row['review_rating'],
+        row['review_source'],
+        row['review_type'],
+        row['nickname']
+    ))
+
+conn.commit()
+conn.close()

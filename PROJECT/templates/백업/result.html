@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block title %}상세 페이지{% endblock %}
+
+{% block contents %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css')}}">
+
+<div class="accommodation-detail-container" style="max-width: 1200px; margin: auto; padding: 2rem 1rem;">
+
+    <!-- 숙소 이미지 + 정보 -->
+    <div class="top-section">
+        <!-- 숙소 이미지 -->
+        <div class="image-section">
+            <img src="{{ accommodation.image_url }}" alt="{{ accommodation.name }}">
+        </div>
+
+        <!-- 숙소 정보 -->
+        <div class="info-section">
+            <h2>{{ accommodation.name }}</h2>
+            <p><strong>주소:</strong> {{ accommodation.address }}</p>
+            <p><strong>평점:</strong> ⭐ {{ accommodation.rating_score }}점 ({{ accommodation.rating_count }}개 리뷰)</p>
+            <p>긍정/부정 점수</p>
+        </div>
+        <!-- 
+            <p>LAT: {{ accommodation.lat }}</p>
+            <p>LNG: {{ accommodation.lng }}</p> 
+        -->
+        <!-- 지도 영역 -->
+        <div id="map_in_result"></div>
+        <script>
+            const searchTerm = "{{ search_term }}"; 
+        </script>
+        <script>
+            window.accommodation = {{ accommodation | tojson | safe }};
+        </script>
+        <script src="{{ url_for('static', filename='js/result_maps.js') }}"></script>
+        <script
+            src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap"
+            async defer>
+        </script>
+    </div>
+    <div class="review-section">
+        <div>
+            <h3>AI 요약 리포트</h3>
+            <p>요약 내용</p>
+        </div>
+    </div>
+    <!-- 리뷰 영역 -->
+    <div class="review-section">
+        <div>
+            <h3>정제한 리뷰 영역</h3>
+            <p>리뷰 내용</p>
+        </div>
+        <div>
+            <h3>감성분석 키워드 그래프</h3>
+            <p>키워드 + 그래프</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
