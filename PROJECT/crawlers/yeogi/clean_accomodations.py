@@ -55,8 +55,10 @@ def clean_save_info(clean_accoms) :
 
 def main():
     accoms = load_accom_from_file()
-    clean_accoms = clean_accommodation(accoms)
-    clean_save_info(clean_accoms)
+    if not accoms :
+        clean_accoms = clean_accommodation(accoms)
+        if not clean_accoms :
+            clean_save_info(clean_accoms)
 
 if __name__ == "__main__":
     main()

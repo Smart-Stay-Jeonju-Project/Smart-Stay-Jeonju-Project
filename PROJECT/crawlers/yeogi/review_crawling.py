@@ -14,7 +14,7 @@ print("현재 작업 경로:", os.getcwd())
 review_id = 'y'
 
 # 웹 드라이버 객체 생성
-def initialze_driver():
+def initialize_driver():
     driver = webdriver.Chrome()
     driver.implicitly_wait(10)
     return driver
@@ -201,14 +201,14 @@ def get_review_details(driver, links):
 
 def main():
     # 드라이버 객체 생성하기
-    driver = initialze_driver()
+    driver = initialize_driver()
 
     # 드라이버가 생성되었을 경우에 함수 실행
     if driver is not None :
         fullPath = targetPath + File_Suffix
         links = load_links_from_file(fullPath)
 
-        if links == 0 :
+        if not links :
             print("링크를 가져오지 못했습니다")
             return
 
@@ -218,7 +218,8 @@ def main():
             all_save_reviews(all_reviews)
         except Exception as e :
             print("리뷰 수집 중 오류 발생 :", e)
-        driver.close()
+        finally :
+            driver.close()
     else :
         print("driver 가 생성되지 않았습니다")
         return

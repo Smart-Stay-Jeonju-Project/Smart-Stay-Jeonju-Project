@@ -19,7 +19,7 @@ link_filename = 'yeogi_accom_link.txt'
 SEARCH_URL = f"https://www.yeogi.com/domestic-accommodations?keyword={KEYWORD}&checkIn={CHECKIN_DATE}&checkOut={CHECKOUT_DATE}&personal=2&freeForm=true"
 
 # 웹 드라이버 객체 생성
-def initialze_driver():
+def initialize_driver():
     try :
         driver = webdriver.Chrome()
         driver.implicitly_wait(10)
@@ -103,25 +103,27 @@ def save_link(all_links) :
 
 def main() :
     # 드라이버 객체 생성하기
-    driver = initialze_driver()
+    driver = initialize_driver()
 
     # 드라이버가 생성되었을 경우에 함수 실행
     if driver is not None :
         # 링크 수집할 페이지 수 구하기
         max_page_num = maxPage(driver)
-
-        if max_page_num == 0 :
-            print("크롤링을 할 수 없습니다")
+        if not max_page_num :
+            print("링크 수집 페이지를 가져오지 못했습니다")
         else :
             print("크롤링을 시작합니다")
             all_links = page_link(driver, max_page_num)
-
+        try :
             # 링크 텍스트 파일 저장 함수
             if save_link(all_links) :
                 print("저장이 완료되었습니다")
             else :
                 print("저장하지 못했습니다")
-        driver.close()
+        except Exception as e :
+            print("리뷰 수집 중 오류 발생 :", e)
+        finally :
+            driver.close()
     else :
         print("driver 가 생성되지 않았습니다")
         return

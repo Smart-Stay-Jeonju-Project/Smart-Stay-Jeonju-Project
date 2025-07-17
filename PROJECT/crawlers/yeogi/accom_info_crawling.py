@@ -13,7 +13,7 @@ print("현재 작업 경로:", os.getcwd())
 fullPath = targetPath + File_Suffix
 
 # 웹 드라이버 객체 생성
-def initialze_driver():
+def initialize_driver():
     driver = webdriver.Chrome()
     driver.implicitly_wait(10)
     return driver
@@ -93,7 +93,7 @@ def save_info(all_info) :
             return False
 
 def main():
-    driver = initialze_driver()
+    driver = initialize_driver()
     links = load_links_from_file(fullPath)
     if get_accommodation_details(driver, links) :
         print("저장이 완료되었습니다")
