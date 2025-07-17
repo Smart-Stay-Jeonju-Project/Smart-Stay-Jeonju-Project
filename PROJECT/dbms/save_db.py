@@ -310,7 +310,7 @@ def db2csv() :
 
     columns = ["accommodation_id", "review_id", "content"]
 
-    # 5. 리스트를 DataFrame으로 변환
+    # 리스트를 DataFrame으로 변환
     df = pd.DataFrame(datas, columns=columns)
 
     # CSV로 저장
