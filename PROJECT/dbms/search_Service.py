@@ -72,7 +72,7 @@ def accommodations_list(search_type, search_term):
                         'total': total, 
                         'list' : datas
                         }
-                print("검색결과 :",result_list)
+                #print("검색결과 :",result_list)
 
 
         except Exception as e :
