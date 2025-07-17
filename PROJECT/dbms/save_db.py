@@ -289,7 +289,7 @@ def save_report():
                 source_id,
                 report['content'],
                 f'{accom_name}_positive_img.jpg',
-                f'{accom_name}_negative_img.jpg'    # 아래(add_image_source)에서 이미지파일 다시 삽입
+                f'{accom_name}_negative_img.jpg'    # 아래에서 이미지파일 다시 삽입
             )
             
             if not dbm.RunSQL(sql, params):
@@ -354,34 +354,6 @@ def add_image_source() :
 
     dbm.DBClose()
 
-# 숙소 테이블에 감성점수 데이터 삽입
-def save_score() :
-    filename = "감성점수_부여.csv"
-    targetPath = "project/data/processed/"
-    fullPath = targetPath + filename
-    score_list = pd.read_csv(fullPath)
-    print(score_list)
-    try : 
-        dbm.DBOpen(os.getenv('DBHOST'), os.getenv('DBNAME'), os.getenv('ID'), os.getenv('PW'))
-
-        # .iterrows()는 데이터프레임을 한 행씩 순회
-        for _, score in score_list.iterrows():  # <- 수정: iterrows() 사용
-            pos_score = score['sentiment_score']
-            accom_id = score['accommodation_id']
-
-            sql ="SELECT accommodation_id FROM accommodations WHERE accommodation_id = %s"
-            dbm.OpenQuery(sql, (accom_id,))
-            result = dbm.GetDatas()
-            dbm.CloseQuery()
-
-            if result:
-                # 숙소번호 일치 : 감성 점수 업데이트
-                sql = "UPDATE accommodations SET positive_score = %s WHERE accommodation_id = %s"
-                dbm.RunSQL(sql, (pos_score, accom_id))
-
-        dbm.DBClose()
-    except Exception as e :
-        print(e)
 
 
 
@@ -435,10 +407,7 @@ if __name__ == "__main__":
     #save_report()
 
     # 워드클라우드 저장
-    #add_image_source()
-
-    # 숙소테이블 감성점수 데이터 삽입
-    save_score()
+    add_image_source()
 
     # db 데이터 csv파일 저장
     #db2csv()
