@@ -123,6 +123,7 @@ def load_keywords():
             dbm.CloseQuery()
             dbm.DBClose()
             return keyword_list
+        
     else :
         print("DB에 연결하지 못했습니다")
         return keyword_list
