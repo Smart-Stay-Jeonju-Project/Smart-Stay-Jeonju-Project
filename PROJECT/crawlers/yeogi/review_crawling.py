@@ -186,7 +186,7 @@ def get_review_details(driver, links):
                     except Exception as e :
                         if page_count > review_page :
                             save_reviews(reviews,link_num)
-                            print("\n수집 완료했습니다 🌸")
+                            print("\n수집 완료했습니다")
                             break
                         else :
                             print("다음 페이지가 없습니다", e)
@@ -200,21 +200,28 @@ def get_review_details(driver, links):
         return all_reviews
 
 def main():
+    # 드라이버 객체 생성하기
     driver = initialze_driver()
-    fullPath = targetPath + File_Suffix
-    links = load_links_from_file(fullPath)
 
-    if links == 0 :
-        print("링크를 가져오지 못했습니다")
+    # 드라이버가 생성되었을 경우에 함수 실행
+    if driver is not None :
+        fullPath = targetPath + File_Suffix
+        links = load_links_from_file(fullPath)
+
+        if links == 0 :
+            print("링크를 가져오지 못했습니다")
+            return
+
+        print("링크를 수집하였습니다\n리뷰 수집하겠습니다\n...")
+        try :
+            all_reviews = get_review_details(driver, links)
+            all_save_reviews(all_reviews)
+        except Exception as e :
+            print("리뷰 수집 중 오류 발생 :", e)
+        driver.close()
+    else :
+        print("driver 가 생성되지 않았습니다")
         return
-
-    print("링크를 수집하였습니다\n리뷰 수집하겠습니다\n...")
-    try :
-        all_reviews = get_review_details(driver, links)
-        all_save_reviews(all_reviews)
-    except Exception as e :
-        print("리뷰 수집 중 오류 발생 :", e)
-    driver.quit()
 
 if __name__ == "__main__":
     main()

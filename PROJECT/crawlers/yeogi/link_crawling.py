@@ -109,11 +109,13 @@ def main() :
     if driver is not None :
         # 링크 수집할 페이지 수 구하기
         max_page_num = maxPage(driver)
+
         if max_page_num == 0 :
             print("크롤링을 할 수 없습니다")
         else :
             print("크롤링을 시작합니다")
             all_links = page_link(driver, max_page_num)
+
             # 링크 텍스트 파일 저장 함수
             if save_link(all_links) :
                 print("저장이 완료되었습니다")
