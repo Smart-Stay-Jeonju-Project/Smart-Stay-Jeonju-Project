@@ -276,8 +276,13 @@ def save_report():
             params = (
                 source_id,
                 report['content'],
+<<<<<<< Updated upstream
                 f'{accom_name}_positive_img',
                 f'{accom_name}_negative_img'
+=======
+                f'{accom_name}_positive_img.jpg',
+                f'{accom_name}_negative_img.jpg'    # 아래에서 이미지파일 다시 삽입
+>>>>>>> Stashed changes
             )
             
             if not dbm.RunSQL(sql, params):
@@ -290,6 +295,64 @@ def save_report():
         print(e)
 
 
+<<<<<<< Updated upstream
+=======
+# 워드클라우드 저장
+def add_image_source() :
+    imgtargetPath = "project/static/images/wordcloud/"
+
+    # 이미지 파일 목록 가져오기
+    image_files = [f for f in os.listdir(imgtargetPath) if os.path.isfile(os.path.join(imgtargetPath, f))]
+
+    dbm.DBOpen(os.getenv('DBHOST'), os.getenv('DBNAME'), os.getenv('ID'), os.getenv('PW'))
+
+    for img_file in image_files:
+
+        try :
+            # 숙소id = img파일명 _이전으로 자르기
+            accom_id = img_file.split('_')[0]
+            print(accom_id)
+
+            # accom_source → source_id 찾기
+            sql ="SELECT source_id FROM accom_source WHERE accommodation_id = %s"
+            dbm.OpenQuery(sql, (accom_id,))
+            result = dbm.GetDatas()
+            dbm.CloseQuery()
+
+            if not result:
+                continue
+
+            source_id = result[0]['source_id']
+
+            # 이미지 파일이 없으면 none
+            if f"{accom_id}_pos.png" in image_files:
+                pos_img = f"{accom_id}_pos.png"
+            else:
+                print(f"{accom_id}의 pos이미지가 없습니다")
+                pos_img = None
+
+            # negative 이미지 처리
+            if f"{accom_id}_neg.png" in image_files:
+                neg_img = f"{accom_id}_neg.png"
+            else:
+                print(f"{accom_id}의 neg이미지가 없습니다")
+                neg_img = None
+
+            # report 업데이트
+            sql  = 'UPDATE report SET positive_img = %s, negative_img =%s WHERE source_id = %s'
+            dbm.RunSQL(sql, (pos_img, neg_img, source_id))
+
+        except Exception as e :
+            print("오류를 건너뜁니다 :",e)
+            continue
+        dbm.CloseQuery()
+
+    dbm.DBClose()
+
+
+
+
+>>>>>>> Stashed changes
 # db 데이터 csv파일로 저장
 def db2csv() :
     # MySQL 연결
@@ -340,5 +403,11 @@ if __name__ == "__main__":
     # 리포트 저장
     #save_report()
 
+<<<<<<< Updated upstream
+=======
+    # 워드클라우드 저장
+    add_image_source()
+
+>>>>>>> Stashed changes
     # db 데이터 csv파일 저장
     db2csv()

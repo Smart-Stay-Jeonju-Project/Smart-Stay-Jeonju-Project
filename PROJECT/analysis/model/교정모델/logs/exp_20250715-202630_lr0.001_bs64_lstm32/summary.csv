@@ -1,0 +1,6 @@
+param,value
+embedding_dim,32
+lstm_units,32
+learning_rate,0.001
+batch_size,64
+val_accuracy_last,0.9633110761642456
