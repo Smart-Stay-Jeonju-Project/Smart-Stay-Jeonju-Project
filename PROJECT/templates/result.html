@@ -24,13 +24,8 @@
             {% if result_accommodation.feature != None %}
                 <p>[{{ result_accommodation.feature}}]</p>
             {% endif %}
-            <!--
-            positive_score|float : 실수형으로 변환
-            '%.2f' % : 소수점 둘째 자리까지 포맷-->
             <p><strong>주소:</strong> {{ result_accommodation.address }}</p>
-            <p><strong> 감성점수: 🙂: {{ ('%.2f' % (result_accommodation.positive_score|float * 100)) }}% ,
-                                🙁: {{ ('%.2f' % ((1 - result_accommodation.positive_score|float) * 100)) }}%
-                </strong></p>
+            <p><strong>감성점수:</strong> 🙂: 00 , 🙁: 00 </p>
             <div id="result_keyword" style="margin-top: 10px;">
                 <p><strong>키워드:</strong></p>
                 <ul id="keywordUI"></ul>
@@ -44,7 +39,7 @@
                 </ul>
             </div>
             <!-- {{ result_accommodation.rating | round(1) }}  : Jinja2 템플릿 문법에서 사용하는 필터(filter) -->
-            <p><strong>평점: ⭐ {{ result_accommodation.rating | round(1) }}점 <!--({{ result_accommodation.rating_count }}개 리뷰)--></strong></p>
+            <p><strong>평점:</strong> ⭐ {{ result_accommodation.rating | round(1) }}점 <!--({{ result_accommodation.rating_count }}개 리뷰)--></p>
         </div>
         <!-- 
             <p>LAT: {{ result_accommodation.lat }}</p>
@@ -111,7 +106,7 @@
                     <thead>
                         <tr class="table-dark">
                             <th style="width: 10%;">닉네임</th>
-                            <th style="width: 9%;">별점</th>
+                            <th style="width: 8%;">별점</th>
                             <th style="width: 8%;">타입</th>
                             <th style="width: 46%;">내용</th>
                             <th style="width: 10%;">작성날짜</th>
