@@ -1,0 +1,46 @@
+
+max_features=2000, ngram=(1,2)
+=== Confusion Matrix ===
+[[2394  183]
+ [ 199 2377]]
+
+=== Classification Report ===
+              precision    recall  f1-score   support
+
+           0      0.923     0.929     0.926      2577
+           1      0.929     0.923     0.926      2576
+
+    accuracy                          0.926      5153
+   macro avg      0.926     0.926     0.926      5153
+weighted avg      0.926     0.926     0.926      5153
+
+
+max_features=2000, ngram=None
+=== Confusion Matrix ===
+[[2394  183]
+ [ 199 2377]]
+
+=== Classification Report ===
+              precision    recall  f1-score   support
+
+           0      0.923     0.929     0.926      2577
+           1      0.929     0.923     0.926      2576
+
+    accuracy                          0.926      5153
+   macro avg      0.926     0.926     0.926      5153
+weighted avg      0.926     0.926     0.926      5153
+
+max_features=1500, ngram=None
+=== Confusion Matrix ===
+[[2393  184]
+ [ 196 2380]]
+
+=== Classification Report ===
+              precision    recall  f1-score   support
+
+           0      0.924     0.929     0.926      2577
+           1      0.928     0.924     0.926      2576
+
+    accuracy                          0.926      5153
+   macro avg      0.926     0.926     0.926      5153
+weighted avg      0.926     0.926     0.926      5153
