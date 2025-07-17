@@ -1,0 +1,54 @@
+
+최초 감성 모델 : BoW + Naive Bayes
+=== Confusion Matrix ===
+[[155  24]
+ [ 20 159]]
+
+=== Classification Report ===
+              precision    recall  f1-score   support
+
+           0      0.886     0.866     0.876       179
+           1      0.869     0.888     0.878       179
+
+    accuracy                          0.877       358
+   macro avg      0.877     0.877     0.877       358
+weighted avg      0.877     0.877     0.877       358
+
+예측 시도 :
+문장: 그냥 그럼
+예측 감성: 0 (긍정 확률: 0.422)
+
+문장: 진짜 별로에요
+예측 감성: 0 (긍정 확률: 0.244)
+
+TF-IDF + Naive Bayes 모델
+=== TF-IDF Confusion Matrix ===
+[[157  22]
+ [ 23 156]]
+
+=== TF-IDF Classification Report ===
+              precision    recall  f1-score   support
+
+           0      0.872     0.877     0.875       179
+           1      0.876     0.872     0.874       179
+
+    accuracy                          0.874       358
+   macro avg      0.874     0.874     0.874       358
+weighted avg      0.874     0.874     0.874       358
+
+TF-IDF + N-gram(1~2) + Logistic Regression 모델
+=== Confusion Matrix ===
+[[160  19]
+ [ 37 142]]
+=== TF-IDF Classification Report ===
+              precision    recall  f1-score   support
+
+           0      0.812     0.894     0.851       179
+           1      0.882     0.793     0.835       179
+
+    accuracy                          0.844       358
+   macro avg      0.847     0.844     0.843       358
+weighted avg      0.847     0.844     0.843       358
+
+
+
