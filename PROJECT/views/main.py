@@ -8,6 +8,8 @@ from dbms.main_Service import load_keywords
 
 
 bp = Blueprint('main', __name__, url_prefix='/')
+google_maps_api_key = os.getenv('API_KEY_MAPS')
+print('API KEY:', google_maps_api_key)
 
 # 메인 페이지 카테고리 별 숙소 목록
 @bp.route('/')
@@ -158,6 +160,7 @@ def search():
                     accommodations=df, # html에 보여줄 accommodations
                     keyword_list=keywords(),
                     selected_keywords=selected_keywords,
+                    google_maps_api_key=google_maps_api_key,
                     result=f"'{search_term}' 검색 결과 {accom_result['total']}건"
                 )
             else:
