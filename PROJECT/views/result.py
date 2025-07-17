@@ -5,6 +5,7 @@ load_dotenv()
 import pandas as pd
 from utils.filename import get_image_url
 from dbms.result_Service import result_accom
+from views.main import keywords
 
 
 bp = Blueprint('result', __name__, url_prefix='/result')
@@ -37,7 +38,9 @@ def on_result():
                 result_keyword=k_datas,
                 search_type=search_type,
                 search_term=search_term,
-                google_maps_api_key=google_maps_api_key
+                google_maps_api_key=google_maps_api_key,
+                keyword_list=keywords()
+
         )
     except Exception as e:
         print(e)

@@ -65,7 +65,7 @@
             {% if result_accommodation.report_text %}
                 <!--<p>{{ result_accommodation.report_text }}</p>-->
                 <!--result_service에서 가져온 리포트 내용 분류 \n 를 <br>로 바꿔줌-->
-                <p>{{ result_accommodation.report_text | replace('\n', '<br>') | safe }} </p>
+                <p><br>{{ result_accommodation.report_text | replace('\n', '<br><br>').replace('n','야놀자').replace('y','여기어때')| safe }} </p>
             {% else %}
                 <p>AI 요약 리포트가 생성되지 않았습니다</p>
             {% endif %}
@@ -76,9 +76,9 @@
         <div>
             <h3>감성분석 키워드 워드클라우드</h3>
             {% if result_accommodation.p_img or result_accommodation.n_img%}
-                <p>긍정</p>
+                <p><strong>긍정</strong></p>
                 <img  width="400px" src="{{ url_for('static', filename='images/report/' + result_accommodation.p_img) }}" alt="{{ result_accommodation.p_img }}">
-                <p>부정</p>
+                <p><strong>부정</strong></p>
                 <img  width="400px" src="{{ url_for('static', filename='images/report/' + result_accommodation.n_img) }}" alt="{{ result_accommodation.n_img }}">
             {% else %}
                 <p>감성분석 키워드 워드클라우드가 생성되지 않았습니다</p>

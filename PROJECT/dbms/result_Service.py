@@ -26,12 +26,14 @@ def result_accom(name):
                     
                     (SELECT r.negative_img FROM report r WHERE r.source_id IN 
                     (SELECT source_id FROM accom_source WHERE accommodation_id = a.accommodation_id) limit 1) as n_img,
-                    GROUP_CONCAT(DISTINCT r.report_text SEPARATOR '\n\n') AS report_text
+                    GROUP_CONCAT(DISTINCT CONCAT('[', s.source, ']\n', r.report_text) SEPARATOR '\n\n'
+                    ) AS report_text
                 FROM accommodations a
                 JOIN accom_source s ON a.accommodation_id = s.accommodation_id
                 JOIN report r ON s.source_id = r.source_id
                 WHERE a.name = %s
-                GROUP BY a.accommodation_id;'''
+                GROUP BY a.accommodation_id;
+'''
             dbm.OpenQuery(sql, (name,))
             total = dbm.GetTotal()
             if total == 1 :
