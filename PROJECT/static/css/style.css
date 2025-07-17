@@ -15,11 +15,23 @@ body {
   --background-color: #f9fafb;
 }
 
+
+
 /* @@@@@ 이태양 추가 @@@@@ */
 /* 검색 영역 가로 정렬 */
-h2 {
+/*로고*/
+h1 {
   font-size: 34px;
   margin: 2rem 0 1rem 12rem; 
+}
+
+h1 a {
+  text-decoration: none;
+  color: rgb(255, 87, 38);
+}
+
+h1 a:hover {
+  color : darkorange;
 }
 
 h2 a {
@@ -427,6 +439,7 @@ select#search_type {
 
 #keywordList li {
   list-style: none;
+  border-radius: 20px;
 }
 
 #keywordList li a {
@@ -435,23 +448,25 @@ select#search_type {
   color: white;
   padding: 6px 12px;
   border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   text-decoration: none;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s ease;
 }
 
 #keywordList li a:hover {
   background-color: var(--main-color-hover);
+  border-radius: 20px;
+
 }
 
 
 /* 상세페이지 지도 */
 #map_in_result {
-  width: 100%;
-  height: 400px;
-  margin-top: 20px;
+  width: 250px;
+  height: 180px;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  flex-shrink: 0;
 }
 
 /* 리뷰 섹션 */
@@ -729,4 +744,152 @@ select#search_type:focus {
 
 .btn-primary:hover {
     background-color: #c63c3c;
+}
+
+/* 공통 테이블 스타일 */
+.table-wrapper {
+  max-width: 100%;
+  overflow-x: auto; /* 반응형 대응: 작은 화면에서는 가로 스크롤 */
+  margin: 2rem auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.styled-table thead {
+  background-color: var(--main-color);
+  color: #fff;
+  text-align: left;
+}
+
+.styled-table th, 
+.styled-table td {
+  padding: 14px 20px;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
+
+.styled-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.styled-table tbody tr:nth-child(even) {
+  background-color: #fdfdfd;
+}
+
+.styled-table th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.styled-table td a {
+  color: var(--main-color);
+  text-decoration: none;
+}
+
+.styled-table td a:hover {
+  text-decoration: underline;
+}
+
+/* 전체 리포트 영역 */
+.ai-report {
+  background-color: #fdfdfd;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-top: 2rem;
+  line-height: 1.7;
+}
+
+/* 제목 */
+.ai-report-title {
+  color: var(--main-color);
+  margin-bottom: 1rem;
+}
+
+/* 본문 텍스트 */
+.ai-report-content {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* 출처 텍스트 */
+.source {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+/* 출처별 컬러 강조 */
+.source.n {
+  color: #413eff; /* 야놀자 */
+  font-size : 16px; 
+}
+
+.source.y {
+  color: #ff2d2d; /* 여기어때 */
+  font-size : 16px; 
+
+}
+
+/* 리포트가 없는 경우 안내 문구 */
+.ai-report-empty {
+  color: #888;
+  font-style: italic;
+}
+
+/* 키워드 섹션 전체 */
+#result_keyword {
+  margin-top: 10px;
+}
+
+/* "키워드:" 제목 */
+#result_keyword p {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+/* 키워드 리스트 */
+#result_keyword ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 각 키워드 아이템 */
+#result_keyword li {
+  display: inline-block;
+}
+
+/* 키워드 링크 스타일 (버튼처럼) */
+#result_keyword a {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #f3f3f3;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+/* hover 효과 */
+#result_keyword a:hover {
+  background-color: #ffe5e5;
+  color: #c00;
+  border-color: #faa;
 }

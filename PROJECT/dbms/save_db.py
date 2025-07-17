@@ -189,8 +189,8 @@ def save_review():
 # 키워드csv의 리뷰내용과 리뷰 테이블의 리뷰내용 매칭하여 저장
 # 테스트 완료
 def save_keyword():
-    targetPath = "project/data/tmp/"
-    filename = "keyword_test copy.csv"
+    targetPath = "project/data/processed/keyword/"
+    filename = "keyword_result.csv"
     fullPath = targetPath + filename
     # 리뷰 파일 불러오기
     keyword_list = pd.read_csv(fullPath)
@@ -201,7 +201,19 @@ def save_keyword():
         # CSV 데이터 프레임을 한 행씩 순회
         for _, row in keyword_list.iterrows():
             review_id = row['review_id']
-            keyword_texts = row['keyword_text'].split()  # 공백 기준 분리
+            #keyword_texts = row['keywords'].split()  # 공백 기준 분리
+            #오류 : 'float' object has no attribute 'split'
+
+            # keywords가 문자열인지 먼저 체크 (NaN 방지)
+            if isinstance(row['keywords'], str) and row['keywords'].strip():
+                keyword_texts = row['keywords'].split() # 공백 기준 분리
+            else:
+                print(f"[스킵] 키워드 없음 → review_id: {review_id}")
+                continue
+
+            if not keyword_texts :
+                print(f"keyword가 없습니다 {review_id}")
+                continue
 
             # 키워드 빈도수(keyword_score)
             keyword_freq = {}
@@ -216,14 +228,14 @@ def save_keyword():
                 # 리뷰가 존재하면 review_id를 변수에 저장
                 review_id = datas[0]['review_id']
                 print(review_id)
-            
+
                 # 각 키워드별로 삽입
-                for keyword_text, freq in keyword_freq.items():
+                for keywords, freq in keyword_freq.items():
                     sql = ''' INSERT INTO keywords (review_id, keyword_text, keyword_score)
                             VALUES (%s, %s, %s)'''
                     
-                    dbm.RunSQL(sql, (review_id, keyword_text, freq))
-                print(f'{len(keyword_texts)} 개 키워드가 {review_id}에 삽입되었습니다')
+                    dbm.RunSQL(sql, (review_id, keywords, freq))
+                    print(f'{len(keyword_texts)} 개 키워드가 {review_id}에 삽입되었습니다')
             else:
                 # review 테이블에 매칭되는 clean_review가 없을 경우 경고 메시지 출력
                 print(f'매칭되는 리뷰 id가 없습니다 : {review_id}.')
@@ -276,8 +288,8 @@ def save_report():
             params = (
                 source_id,
                 report['content'],
-                f'{accom_name}_positive_img',
-                f'{accom_name}_negative_img'
+                f'{accom_name}_positive_img.jpg',
+                f'{accom_name}_negative_img.jpg'    # 아래에서 이미지파일 다시 삽입
             )
             
             if not dbm.RunSQL(sql, params):
@@ -290,6 +302,43 @@ def save_report():
         print(e)
 
 
+# 워드클라우드 저장
+def add_image_source() :
+    imgtargetPath = "DATA/imgs/yanolja_img"
+
+    # 이미지 파일 목록 가져오기
+    image_files = [f for f in os.listdir(imgtargetPath) if os.path.isfile(os.path.join(imgtargetPath, f))]
+
+    dbm.DBOpen(os.getenv('DBHOST'), os.getenv('DBNAME'), os.getenv('ID'), os.getenv('PW'))
+
+    for img_file in image_files:
+
+        try :
+            # 숙소id = img파일명 _이전으로 자르기
+            accom_id = img_file.split('_')[0]
+
+            # accom_source → source_id 찾기
+            sql ="SELECT source_id FROM accom_source WHERE accommodation_id = %s"
+            dbm.OpenQuery(sql, (accom_id))
+            result = dbm.GetDatas()
+
+            if not result:
+                continue
+
+            # report 업데이트
+            sql  = 'UPDATE report SET positive_img = %s, negative_img =%s WHERE source_id = %s'
+            dbm.RunSQL(sql, (f"{accom_id}_positive.jpg", f"{accom_id}_negative.jpg", result['source_id']))
+
+        except Exception as e :
+            print("오류를 건너뜁니다 :",e)
+            continue
+        dbm.CloseQuery()
+
+    dbm.DBClose()
+
+
+
+
 # db 데이터 csv파일로 저장
 def db2csv() :
     # MySQL 연결
@@ -298,7 +347,8 @@ def db2csv() :
     sql = '''SELECT 
             a.accommodation_id, 
             r.review_id, 
-            r.content
+            r.content,
+            r.review_type
             FROM accommodations a
             JOIN accom_source s ON a.accommodation_id = s.accommodation_id
             JOIN review r ON s.source_id = r.source_id;
@@ -308,13 +358,13 @@ def db2csv() :
 
     datas = dbm.GetDatas()
 
-    columns = ["accommodation_id", "review_id", "content"]
+    columns = ["accommodation_id", "review_id", "content","review_type"]
 
     # 리스트를 DataFrame으로 변환
     df = pd.DataFrame(datas, columns=columns)
 
     # CSV로 저장
-    df.to_csv("project/data/tmp/accom_review.csv", index=False, encoding='utf-8-sig')
+    df.to_csv("project/data/tmp/accom_review_type.csv", index=False, encoding='utf-8-sig')
 
     # 연결 종료
     dbm.CloseQuery()
@@ -333,10 +383,10 @@ if __name__ == "__main__":
     #save_review()
 
     # 키워드 저장
-    #save_keyword()
+    save_keyword()
 
     # 리포트 저장
     #save_report()
 
     # db 데이터 csv파일 저장
-    db2csv()
+    #db2csv()

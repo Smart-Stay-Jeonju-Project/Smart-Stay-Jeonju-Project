@@ -26,7 +26,7 @@
             {% endif %}
             <p><strong>주소:</strong> {{ result_accommodation.address }}</p>
             <p><strong>감성점수:</strong> 🙂: 00 , 🙁: 00 </p>
-            <div id="keywordList" style="margin-top: 10px;">
+            <div id="result_keyword" style="margin-top: 10px;">
                 <p><strong>키워드:</strong></p>
                 <ul id="keywordUI"></ul>
                     {% for keyword in result_keyword %}
@@ -60,14 +60,17 @@
         </script>
     </div>
     <div class="review-section">
-        <div>
-            <h3>AI 요약 리포트</h3>
+        <div class="ai-report">
+            <h3 class="ai-report-title">AI 요약 리포트</h3>
             {% if result_accommodation.report_text %}
                 <!--<p>{{ result_accommodation.report_text }}</p>-->
                 <!--result_service에서 가져온 리포트 내용 분류 \n 를 <br>로 바꿔줌-->
-                <p><br>{{ result_accommodation.report_text | replace('\n', '<br><br>').replace('n','야놀자').replace('y','여기어때')| safe }} </p>
+                <p class="ai-report-content"><br>
+                    {{ result_accommodation.report_text | replace('\n', '<br>')|
+                     replace('n', '<strong class="source n">[야놀자]</strong>')| 
+                     replace('y', '<strong class="source y">[여기어때]</strong>')| safe }} </p>
             {% else %}
-                <p>AI 요약 리포트가 생성되지 않았습니다</p>
+                <p class="ai-report-empty">AI 요약 리포트가 생성되지 않았습니다</p>
             {% endif %}
 
         </div>
@@ -87,10 +90,10 @@
     </div>
     <!-- 리뷰 영역 -->
     <div class="review-section">
-        <div>
+        <div class="table-wrapper">
             <h3>정제한 리뷰 영역(최신순 10개 리뷰)</h3>
             {% if result_review %}
-                <table border = "1" width="1200px"  class="table table-striped table-hover">
+                <table border = "1" width="1200px"  class="table table-striped table-hover styled-table">
                     <thead>
                         <tr class="table-dark">
                             <th style="width: 10%;">닉네임</th>
