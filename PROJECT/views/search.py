@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, flash
 from dbms.search_Service import accommodations_list
 from views.main import keywords 
+import os
 
 bp = Blueprint('search', __name__, url_prefix='/')
-
+google_maps_api_key = os.getenv('API_KEY_MAPS')
+print('API KEY:', google_maps_api_key)
 
 # 검색타입 선택에 따른 기능들
 @bp.route('/search', methods=['GET'])
@@ -70,6 +72,7 @@ def search():
                     accommodations=df, # html에 보여줄 accommodations
                     keyword_list=keywords(),
                     selected_keywords=selected_keywords,
+                    google_maps_api_key=google_maps_api_key,
                     result=f"'{search_term}' 검색 결과 {accom_result['total']}건"
                 )
             else:
