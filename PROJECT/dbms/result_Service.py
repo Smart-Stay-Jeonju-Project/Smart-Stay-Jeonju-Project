@@ -16,7 +16,7 @@ def result_accom(name):
         try :
             dbm.DBOpen(os.getenv('DBHOST'), os.getenv('DBNAME'), os.getenv('ID'), os.getenv('PW'))
 
-            # 리포트 텍스트가 짤림
+            # 리포트 텍스트가 짤림-> group_concat_max 값 조절
             dbm.OpenQuery("SET SESSION group_concat_max_len = 1000000")
             # 숙소상세정보 조회
             # report 테이블에서 긍부정 워드클라우드와 요약내용 조회
@@ -26,7 +26,7 @@ def result_accom(name):
                     
                     (SELECT r.negative_img FROM report r WHERE r.source_id IN 
                     (SELECT source_id FROM accom_source WHERE accommodation_id = a.accommodation_id) limit 1) as n_img,
-                    GROUP_CONCAT(DISTINCT CONCAT('[', s.source, ']\n', r.report_text) SEPARATOR '\n\n'
+                    GROUP_CONCAT(DISTINCT CONCAT( s.source, '\n', r.report_text) SEPARATOR '\n\n'
                     ) AS report_text
                 FROM accommodations a
                 JOIN accom_source s ON a.accommodation_id = s.accommodation_id
