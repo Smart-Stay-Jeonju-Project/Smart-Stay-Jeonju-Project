@@ -5,6 +5,7 @@ __pycache__/
 
 # 모델/딥러닝 관련 캐시
 *.ckpt
+*.pickle
 *.pt
 *.pth
 *.h5
