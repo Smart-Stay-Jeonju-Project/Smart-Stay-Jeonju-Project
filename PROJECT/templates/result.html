@@ -17,7 +17,6 @@
             onerror="this.src='{{ url_for('static', filename='images/tmp/logo.jpg') }}'"
             alt="{{ result_accommodation.name }}">
         </div>
-
         <!-- 숙소 정보 -->  
         <div class="info-section">
             <h2>{{ result_accommodation.name }}</h2>
@@ -25,7 +24,7 @@
                 <p>[{{ result_accommodation.feature}}]</p>
             {% endif %}
             <!--
-            positive_score|float : 실수형으로 변환
+            positive_score|float : 실수형으로 변환 
             '%.2f' % : 소수점 둘째 자리까지 포맷-->
             <p><strong>주소:</strong> {{ result_accommodation.address }}</p>
             <p><strong> 감성점수: 🙂: {{ ('%.2f' % (result_accommodation.positive_score|float * 100)) }}% ,
