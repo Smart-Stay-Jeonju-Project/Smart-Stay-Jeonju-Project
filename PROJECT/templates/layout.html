@@ -14,7 +14,7 @@
         </h1>
         <!-- 검색 메뉴 -->
         <section class="search_section">
-            <form action="{{url_for('main.search')}}" method="get" class="search_box">
+            <form action="{{url_for('search.search')}}" method="get" class="search_box">
                 <select name="search_type" id="search_type">
                     <option value="name" {% if search_type == 'name' %}selected{% endif %}>상호명</option>
                     <option value="keyword" {% if search_type == 'keyword' %}selected{% endif %}>키워드</option>
@@ -38,7 +38,7 @@
                     <ul id="keywordUI">
                         {% for keyword in keyword_list %}
                         <li>
-                            <a href="{{ url_for('main.search') }}?search_type=keyword&search_term={{ keyword }}"
+                            <a href="{{ url_for('search.search') }}?search_type=keyword&search_term={{ keyword }}"
                                 {% if keyword == search_term %}
                                     style="background-color: #ffdddd; font-weight: bold; color: red;"
                                 {% endif %}>
