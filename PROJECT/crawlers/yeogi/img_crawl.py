@@ -39,7 +39,6 @@ def load_links_from_file(fullPath):
 # 숙소 상세 정보(이름, src) 크롤링
 def get_accommodation_details(driver, links):
     if links :
-        index = 0
         img_src_link = []
 
         for link in links[:] :
@@ -65,7 +64,7 @@ def get_accommodation_details(driver, links):
                 print(f"이미지를 가져오지 못했습니다. {e}")
                 src = ""
             
-            # 이미지 파일 이름 : "순번_숙소이름.jpg"
+            # 이미지 파일 이름 : "숙소이름.jpg"
             img_name = name.replace(' ','')
             imgs = {'name' : f"{img_name}", 'src' : src}
             img_src_link.append(imgs)
@@ -74,7 +73,7 @@ def get_accommodation_details(driver, links):
             if len(img_src_link) >= 20 :
                 save_img_list(img_src_link)
                 img_src_link = []
-
+        save_img_list(img_src_link)
         return img_src_link
     else :
         return None
@@ -111,6 +110,7 @@ def save_img_list(img_src_link) :
 # 이미지 파일을 실제로 저장하는 함수
 def save_img(imgs) :
     if imgs :
+        miss_imgs = []
         # 저장할 폴더가 없다면 생성하기
         if not os.path.isdir(imgTargetPath) :
             os.makedirs(imgTargetPath)
@@ -120,11 +120,20 @@ def save_img(imgs) :
                 img_url = img['src']
                 fullPath = os.path.join(imgTargetPath, img_name)
                 # 이미지 다운로드 요청
-                save_img = requests.get(img_url)
-                # 파일로 저장하기
+                try :
+                    save_img = requests.get(img_url)
+                    # 파일로 저장하기
+                    with open(fullPath, 'wb') as f :
+                        f.write(save_img.content)
+                except Exception as e :
+                   print(f"이미지 저장 오류. {e}")
+                   miss_imgs.append(f"{img_name} : {img_url}\n")
+                   continue
+            if miss_imgs is not None :
+                fullPath = os.path.join(targetPath, 'failed_url.txt')
                 with open(fullPath, 'wb') as f :
-                    f.write(save_img.content)
-        
+                    f.write(miss_imgs)
+                print("다운받지 못한 이미지 리스트를 저장했습니다.")
         except Exception as e :
             print(f"이미지를 저장하지 못했습니다, {e}")
             return
