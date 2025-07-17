@@ -9,7 +9,7 @@ from views.main import keywords
 
 
 bp = Blueprint('result', __name__, url_prefix='/result')
-google_maps_api_key = os.getenv('GOOGLE_MAPS_API_KEY')
+google_maps_api_key = os.getenv('API_KEY_MAPS')
 print('API KEY:', google_maps_api_key)
 
 # result.html에서 검색 타입, 검색 결과 제공
