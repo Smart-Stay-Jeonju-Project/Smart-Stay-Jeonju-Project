@@ -297,8 +297,10 @@ def db2csv() :
 
     sql = '''SELECT 
             a.accommodation_id, 
+            a.name,
             r.review_id, 
-            r.content
+            r.content,
+            r.review_type
             FROM accommodations a
             JOIN accom_source s ON a.accommodation_id = s.accommodation_id
             JOIN review r ON s.source_id = r.source_id;
@@ -308,13 +310,13 @@ def db2csv() :
 
     datas = dbm.GetDatas()
 
-    columns = ["accommodation_id", "review_id", "content"]
+    columns = ["accommodation_id", "name", "review_id", "content","review_type"]
 
     # 리스트를 DataFrame으로 변환
     df = pd.DataFrame(datas, columns=columns)
 
     # CSV로 저장
-    df.to_csv("project/data/tmp/accom_review.csv", index=False, encoding='utf-8-sig')
+    df.to_csv("accom_review_source.csv", index=False, encoding='utf-8-sig')
 
     # 연결 종료
     dbm.CloseQuery()
