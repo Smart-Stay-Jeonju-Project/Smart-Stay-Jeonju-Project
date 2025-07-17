@@ -36,7 +36,7 @@
     <script src="{{ url_for('static', filename='js/search_maps.js') }}"></script>
     <!-- Maps API 불러오기 -->
     <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg8UOceSAXDR2NnMikougMamOyAxbdRac&callback=initMap"
+        src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap"
         async defer>
     </script>
     <script>
