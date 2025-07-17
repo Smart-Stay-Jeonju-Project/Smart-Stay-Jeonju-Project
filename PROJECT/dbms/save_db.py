@@ -304,7 +304,7 @@ def save_report():
 
 # 워드클라우드 저장
 def add_image_source() :
-    imgtargetPath = "DATA/imgs/yanolja_img"
+    imgtargetPath = "project/analysis/wordcloud/"
 
     # 이미지 파일 목록 가져오기
     image_files = [f for f in os.listdir(imgtargetPath) if os.path.isfile(os.path.join(imgtargetPath, f))]
@@ -316,18 +316,20 @@ def add_image_source() :
         try :
             # 숙소id = img파일명 _이전으로 자르기
             accom_id = img_file.split('_')[0]
+            print(accom_id)
 
             # accom_source → source_id 찾기
             sql ="SELECT source_id FROM accom_source WHERE accommodation_id = %s"
             dbm.OpenQuery(sql, (accom_id))
             result = dbm.GetDatas()
+            print(result)
 
             if not result:
                 continue
 
             # report 업데이트
             sql  = 'UPDATE report SET positive_img = %s, negative_img =%s WHERE source_id = %s'
-            dbm.RunSQL(sql, (f"{accom_id}_positive.jpg", f"{accom_id}_negative.jpg", result['source_id']))
+            dbm.RunSQL(sql, (f"{accom_id}_pos.png", f"{accom_id}_neg.png", result['source_id']))
 
         except Exception as e :
             print("오류를 건너뜁니다 :",e)
@@ -383,10 +385,13 @@ if __name__ == "__main__":
     #save_review()
 
     # 키워드 저장
-    save_keyword()
+    #save_keyword()
 
     # 리포트 저장
     #save_report()
+
+    # 워드클라우드 저장
+    add_image_source()
 
     # db 데이터 csv파일 저장
     #db2csv()
