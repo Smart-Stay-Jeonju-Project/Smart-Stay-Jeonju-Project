@@ -406,7 +406,7 @@ select#search_type {
 
 .image-section img {
   width: 100%;
-  height: auto;
+  height: 280px;
   border-radius: 10px;
   object-fit: cover;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -425,7 +425,7 @@ select#search_type {
 
 .info-section p {
   margin: 8px 0;
-  font-size: 1rem;
+  font-size: 1.2rem;
 }
 
 
@@ -471,7 +471,6 @@ select#search_type {
 }
 
 .review-section .wordcloud-wrapper {
-  display: flex;
   justify-content: center;   /*가운데 정렬 추가 */
   gap: 2rem;
   align-items: flex-start;
@@ -480,10 +479,11 @@ select#search_type {
 
 .wordcloud-item {
   text-align: center;
+  margin-top: 80px;
 }
 
 .wordcloud-item img {
-  width: 500px; /* 필요에 따라 600px 이상도 가능 */
+  width: 700px; /* 필요에 따라 600px 이상도 가능 */
   max-width: 100%; /* 반응형 대응 */
   height: auto;
 }
@@ -502,6 +502,7 @@ select#search_type {
   margin-top: 0;
   color: var(--main-color);
   margin-bottom: 1rem;
+  font-size: 1.5rem;
 }
 
 .review-section img {
@@ -839,7 +840,7 @@ select#search_type:focus {
 
 /* 본문 텍스트 */
 .ai-report-content {
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: #333;
 }
 
@@ -902,7 +903,7 @@ select#search_type:focus {
   color: #333;
   border: 1px solid #ddd;
   border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   text-decoration: none;
   transition: all 0.2s ease-in-out;
 }
