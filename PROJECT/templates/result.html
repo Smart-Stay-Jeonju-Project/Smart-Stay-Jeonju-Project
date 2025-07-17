@@ -31,7 +31,7 @@
                 <ul id="keywordUI"></ul>
                     {% for keyword in result_keyword %}
                         <li>
-                            <a href="{{ url_for('main.search') }}?search_type=keyword&search_term={{ keyword['keyword_text'] }}">
+                            <a href="{{ url_for('search.search') }}?search_type=keyword&search_term={{ keyword['keyword_text'] }}">
                                 {{ keyword['keyword_text'] }}
                             </a>
                         </li>
@@ -78,14 +78,23 @@
     <div class="review-section">
         <div>
             <h3>감성분석 키워드 워드클라우드</h3>
-            {% if result_accommodation.p_img or result_accommodation.n_img%}
-                <p><strong>긍정</strong></p>
-                <img  width="400px" src="{{ url_for('analysis', filename='wordcloud/' + result_accommodation.p_img) }}" alt="{{ result_accommodation.p_img }}">
-                <p><strong>부정</strong></p>
-                <img  width="400px" src="{{ url_for('analysis', filename='wordcloud/' + result_accommodation.n_img) }}" alt="{{ result_accommodation.n_img }}">
-            {% else %}
-                <p>감성분석 키워드 워드클라우드가 생성되지 않았습니다</p>
-            {% endif %}
+            <div class="wordcloud-wrapper">
+                <div class="wordcloud-item">
+                    {% if result_accommodation.p_img %}
+                        <p><strong>긍정 워드클라우드</strong></p>
+                        <img  width="400px" src="{{ url_for('static', filename='images/wordcloud/' + result_accommodation.p_img) }}" alt="{{ result_accommodation.p_img }}">
+                    {% else %}
+                        <p>긍정 키워드 워드클라우드가 생성되지 않았습니다</p>
+                    {% endif %}
+                </div>
+                <div class="wordcloud-item">
+                    {% if result_accommodation.n_img%}
+                        <p><strong>부정 워드클라우드</strong></p>
+                        <img  width="400px" src="{{ url_for('static', filename='images/wordcloud/' + result_accommodation.n_img) }}" alt="{{ result_accommodation.n_img }}">
+                    {% else %}
+                        <p>부정 키워드 워드클라우드가 생성되지 않았습니다</p>
+                    {% endif %}
+                </div>
         </div>
     </div>
     <!-- 리뷰 영역 -->

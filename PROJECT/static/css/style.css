@@ -43,6 +43,7 @@ h2 a:hover {
   color : darkorange;
 }
 
+
 .search_box {
     display: flex;
     align-items: center;
@@ -50,8 +51,8 @@ h2 a:hover {
     gap: 1rem; /* 요소 간 간격 */
     max-width: 800px;
     margin: 1rem auto;
-    padding: 0.5rem;
-    height:300px;
+    padding: 1rem;
+    height:200px;
 }
 
 /* 검색 타입 select */
@@ -468,6 +469,25 @@ select#search_type {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   flex-shrink: 0;
 }
+
+.review-section .wordcloud-wrapper {
+  display: flex;
+  justify-content: center;   /*가운데 정렬 추가 */
+  gap: 2rem;
+  align-items: flex-start;
+  margin-top: 1rem;
+}
+
+.wordcloud-item {
+  text-align: center;
+}
+
+.wordcloud-item img {
+  width: 500px; /* 필요에 따라 600px 이상도 가능 */
+  max-width: 100%; /* 반응형 대응 */
+  height: auto;
+}
+
 
 /* 리뷰 섹션 */
 .review-section {

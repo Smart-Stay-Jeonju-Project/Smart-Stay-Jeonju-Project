@@ -15,6 +15,7 @@ def create_app() :
     app.register_blueprint(main.bp)
     app.register_blueprint(result.bp)
     app.register_blueprint(search.bp)
+    
     @app.route('/')
     def root() :
         return render_template('main.html')

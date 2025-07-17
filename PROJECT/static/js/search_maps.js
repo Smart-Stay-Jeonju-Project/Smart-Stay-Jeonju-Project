@@ -56,7 +56,7 @@ function initMap () {
         });
 
         // 좌측 리스트 항목 구성
-        const card = document.createElement("div");``
+        const card = document.createElement("div");
         card.className = "accommodation-card";
         card.innerHTML = `
             <img src="static/images/tmp/${image}" onerror="this.src='static/images/tmp/logo.jpg'" alt="${name}">
