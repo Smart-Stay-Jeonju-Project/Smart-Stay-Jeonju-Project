@@ -72,7 +72,7 @@ def accommodations_list(search_type, search_term):
                         'total': total, 
                         'list' : datas
                         }
-                print("검색결과 :",result_list)
+                #print("검색결과 :",result_list)
 
 
         except Exception as e :
@@ -123,6 +123,7 @@ def load_keywords():
             dbm.CloseQuery()
             dbm.DBClose()
             return keyword_list
+        
     else :
         print("DB에 연결하지 못했습니다")
         return keyword_list
