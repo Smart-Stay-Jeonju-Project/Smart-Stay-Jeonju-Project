@@ -32,3 +32,12 @@ SELECT
 
 FROM accom_source s
 GROUP BY s.source_addr;
+
+
+
+-- accom_source 테이블에 accommodations 테이블 주소 매칭하여 id 주가
+
+UPDATE accom_source s
+JOIN accommodations a
+  ON s.source_addr = a.address
+SET s.accommodation_id = a.accommodation_id;

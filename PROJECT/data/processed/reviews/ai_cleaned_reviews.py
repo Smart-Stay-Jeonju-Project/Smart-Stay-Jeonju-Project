@@ -17,22 +17,22 @@ OUTPUT_CSV_PATH = "C:/Users/MYCOM/Documents/GitHub/Smart-Stay-Jeonju-Project/PRO
 
 current_api_index = 0
 
-def create_client(api_key):
+def create_client(api_key) :
     return genai.Client(api_key=api_key.strip())
 
-def batch_generate(sliced_df, start_idx):
+def batch_generate(sliced_df, start_idx) :
     global current_api_index
-    while current_api_index < len(API_KEY_AI):
+    while current_api_index < len(API_KEY_AI) :
         api_key = API_KEY_AI[current_api_index]
-        try:
+        try :
             client = create_client(api_key)
 
             user_input_parts = [
-                types.Part.from_text(text=f"{start_idx + i}: {row.review.strip()}")
+                types.Part.from_text(text=f"{start_idx + i} : {row.review.strip()}")
                 for i, row in enumerate(sliced_df.itertuples())
                 if isinstance(row.review, str) and row.review.strip()
             ]
-            if not user_input_parts:
+            if not user_input_parts :
                 return ["ERROR"] * len(sliced_df)
 
             contents = [
@@ -83,19 +83,19 @@ def batch_generate(sliced_df, start_idx):
 
             cleaned_output = [""] * len(sliced_df)
 
-            for item in parsed.get("list", []):
+            for item in parsed.get("list", []) :
                 try:
                     idx = int(item["idx"])
                     sentiment = item["sentiment"]
                     content = item["cleaned_review_content"]
                     relative_idx = idx - start_idx
                     cleaned_output[relative_idx] = f"{sentiment},{content}"
-                except Exception as e:
+                except Exception as e : 
                     continue
 
             return [r if r else "ERROR" for r in cleaned_output]
 
-        except Exception as e:
+        except Exception as e :
             print(f"⚠️ 키 {api_key[:10]} 실패: {e}")
             current_api_index += 1
             print("🔁 다음 API 키로 전환합니다...\n")
@@ -104,54 +104,54 @@ def batch_generate(sliced_df, start_idx):
     print("❌ 모든 API 키 실패. 중단.")
     return ["ERROR"] * len(sliced_df)
 
-def run_batch_cleaning():
+def run_batch_cleaning() :
     df = pd.read_csv(INPUT_CSV_PATH, header=None, names=["review"])
     total = len(df)
     BATCH_SIZE = 50
 
-    # ✅ 기존 결과 확인: 이어서 처리할 시작 인덱스 결정
+    # 기존 결과 확인: 이어서 처리할 시작 인덱스 결정
     processed_count = 0
     last_saved_count = 0
     all_cleaned = []
 
-    if os.path.exists(OUTPUT_CSV_PATH):
+    if os.path.exists(OUTPUT_CSV_PATH) :
         try:
             existing_df = pd.read_csv(OUTPUT_CSV_PATH, header=None)
             all_cleaned = existing_df[0].tolist()
             processed_count = len(all_cleaned)
-            print(f"📁 이전 정제 기록 발견 → {processed_count}개 리뷰 건너뜀")
+            print(f" 이전 정제 기록 발견 → {processed_count}개 리뷰 건너뜀")
         except Exception as e:
-            print("⚠️ 기존 파일 읽기 실패. 새로 시작합니다:", e)
+            print(" 기존 파일 읽기 실패. 새로 시작합니다:", e)
 
-    for i in range(processed_count, total, BATCH_SIZE):
+    for i in range(processed_count, total, BATCH_SIZE) :
         sliced_df = df.iloc[i:i + BATCH_SIZE]
         print(f"▶ {i + 1} ~ {i + len(sliced_df)} 리뷰 정제 중...")
 
         cleaned = batch_generate(sliced_df, start_idx=i + 1)
         if not cleaned:
-            print("⛔ 정제 실패 또는 응답 없음. 중단.")
+            print(" 정제 실패 또는 응답 없음. 중단.")
             break
 
         all_cleaned.extend(cleaned)
         processed_count += len(cleaned)
 
-        # ✅ 100개마다 저장현황 업데이트
-        if processed_count - last_saved_count >= 100:
-            with open(OUTPUT_CSV_PATH, "w", encoding="utf-8") as f:
-                for review in all_cleaned:
+        # 100개마다 저장현황 업데이트
+        if processed_count - last_saved_count >= 100 :
+            with open(OUTPUT_CSV_PATH, "w", encoding="utf-8") as f :
+                for review in all_cleaned :
                     f.write(f'"{review}"\n')
             last_saved_count = processed_count  # 저장 후 기준값 갱신
             print(f"저장 → {OUTPUT_CSV_PATH} (누적 : {processed_count}개)")
 
         time.sleep(1.0)
 
-    # ✅ 최종 결과 저장
-    with open(OUTPUT_CSV_PATH, "w", encoding="utf-8-sig") as f:
+    # 최종 결과 저장
+    with open(OUTPUT_CSV_PATH, "w", encoding="utf-8-sig") as f :        
         for review in all_cleaned:
             f.write(f'"{review}"\n')
 
     print(f"\n✅ 전체 정제 완료 → {OUTPUT_CSV_PATH}")
     print(f"총 {len(all_cleaned)}개 리뷰 정제됨.")
 
-if __name__ == "__main__":
+if __name__ == "__main__" :
     run_batch_cleaning()

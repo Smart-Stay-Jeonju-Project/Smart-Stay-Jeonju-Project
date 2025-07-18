@@ -1,0 +1,5 @@
+PROJECT/dbms/__pycache__/result_Service.cpython-310.pyc
+PROJECT/dbms/__pycache__/search_Service.cpython-310.pyc
+PROJECT/views/__pycache__/main.cpython-310.pyc
+PROJECT/views/__pycache__/result.cpython-310.pyc
+*.pyc

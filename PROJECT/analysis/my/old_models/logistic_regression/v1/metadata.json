@@ -1,9 +1,0 @@
-{
-  "model": "LogisticRegression",
-  "description": "TF-IDF + Okt 기반 이진 감성 분석",
-  "created_at": "2025-07-12 12:25:46.473649",
-  "vectorizer": "TfidfVectorizer(ngram_range=(1,2))",
-  "stopwords_count": 178,
-  "train_size": 495,
-  "test_size": 501
-}

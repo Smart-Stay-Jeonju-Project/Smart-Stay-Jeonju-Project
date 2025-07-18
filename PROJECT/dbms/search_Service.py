@@ -53,7 +53,8 @@ def accommodations_list(search_type, search_term):
                 sql = '''
                     SELECT DISTINCT a.*
                     FROM accommodations a
-                    JOIN review r ON a.accommodation_id = r.accommodation_id
+                    join accom_source s ON a.accommodation_id = s.accommodation_id
+                    JOIN review r ON s.source_id = r.source_id
                     JOIN keywords k ON r.review_id = k.review_id
                     WHERE k.keyword_text = %s
                     ORDER BY a.rating DESC;
@@ -71,7 +72,7 @@ def accommodations_list(search_type, search_term):
                         'total': total, 
                         'list' : datas
                         }
-                print("검색결과 :",result_list)
+                #print("검색결과 :",result_list)
 
 
         except Exception as e :
@@ -85,3 +86,44 @@ def accommodations_list(search_type, search_term):
         print("DB에 연결하지 못했습니다")
         return result_list
     
+
+    
+# 키워드 목록들
+def load_keywords():
+    keyword_list = None
+    if dbm : 
+        try :
+            dbm.DBOpen(os.getenv('DBHOST'), os.getenv('DBNAME'), os.getenv('ID'), os.getenv('PW'))
+
+            # 여러 리뷰에서 나온 keyord_text의 빈도수를 합산하여, 빈도수가 높은 상위 10개 키워드만 출력 
+            # -> 랜덤 키워드로 변경
+            sql = '''SELECT keyword_text, SUM(keyword_score) AS total_score
+                    FROM keywords
+                    GROUP BY keyword_text
+                    ORDER BY rand()
+                    LIMIT 10;'''
+            dbm.OpenQuery(sql, )
+            total = dbm.GetTotal()
+            if total > 0 :
+                print("상위 10개 키워드가 조회되었습니다")
+            else :
+                return keyword_list
+            datas = dbm.GetDatas()
+                
+            if datas : 
+                keyword_list = {
+                    'total': total, 
+                    'list' : datas
+                    }
+            #print("검색결과 :",keyword_list['list'])
+
+        except Exception as e :
+            print(e)
+        finally :
+            dbm.CloseQuery()
+            dbm.DBClose()
+            return keyword_list
+        
+    else :
+        print("DB에 연결하지 못했습니다")
+        return keyword_list
