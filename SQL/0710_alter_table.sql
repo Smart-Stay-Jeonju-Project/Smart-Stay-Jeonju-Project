@@ -102,6 +102,21 @@ SET s.accommodation_id = a.accommodation_id;
 UPDATE report SET positive_img = NULL;
 UPDATE report SET negative_img = NULL;
 
+-- 여기어때 평점/2한 값과 야놀자 평점의 평균으로 통합숙소 테이블 평점 업데이트
+UPDATE accommodations a
+JOIN (
+    SELECT 
+        source_addr,
+        AVG(CASE 
+                WHEN source = 'y' THEN source_rating / 2
+                WHEN source = 'n' THEN source_rating
+                ELSE NULL
+            END) AS avg_rating
+    FROM accom_source
+    GROUP BY source_addr
+) s ON a.address = s.source_addr
+SET a.rating = s.avg_rating;
+
 
 -- **** 안전모드 켜기
 SET SQL_SAFE_UPDATES = 1;

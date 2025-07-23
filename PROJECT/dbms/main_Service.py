@@ -29,6 +29,7 @@ def load_categorys(category):
                         'list' : datas
                         }
                 #print("검색결과 :",category_list['list'])
+                dbm.CloseQuery()
             else:
                 print("지원하지 않는 카테고리입니다.")
 

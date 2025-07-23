@@ -29,7 +29,7 @@
                     {% if accommodation.feature != 'None' %}
                         <p>[{{ accommodation.feature}}]</p>
                     {% endif %}
-                    <p>⭐ {{ accommodation.rating}}점 <!--({{ accommodation.formatted_rating_count }})--></p>
+                    <p>⭐ {{ '%.2f' % (accommodation.rating)}}점 <!--({{ accommodation.formatted_rating_count }})--></p>
                     <p>{{ accommodation.address }}</p>
                 </div>
                 {% endfor %}

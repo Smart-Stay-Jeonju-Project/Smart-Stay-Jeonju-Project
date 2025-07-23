@@ -1,7 +1,7 @@
 // result.html에 단일 마커
 
 function initMap() {
-    const accommodation = result_accommodation || [];
+    const accommodation = result_accom_detail || [];
     // 숙소 정보 확인
     if (!accommodation) {
         console.error("accommodation 정보가 없습니다.");

@@ -20,28 +20,31 @@ def on_result():
 
     name = request.args.get('name', '').strip()  # 숙소명
     #print(name)
-    datas, r_datas, k_datas = result_accom(name)
+    a_datas, datas, r_datas, k_datas = result_accom(name)
+    #print('a_datas:',a_datas)      # dict
+    #print('datas:',datas)      # dict
     print('datas:',type(datas))      # dict
     #print('r_datas:',r_datas)        # list
     print("r_datas:",type(r_datas))     # list
     #print('k_datas:',k_datas)     # dict
 
     try:
-        if not datas :
+        if not a_datas :
             flash("해당 숙소 정보를 찾을 수 없습니다.", "error")
             return redirect('/')
-        else : 
-            return render_template(
-                'result.html',
-                result_accommodation=datas,
-                result_review=r_datas,
-                result_keyword=k_datas,
-                search_type=search_type,
-                search_term=search_term,
-                google_maps_api_key=google_maps_api_key,
-                keyword_list=keywords()
+
+        return render_template(
+            'result.html',
+            result_accom_detail=a_datas,
+            result_accommodation=datas,
+            result_review=r_datas,
+            result_keyword=k_datas,
+            search_type=search_type,
+            search_term=search_term,
+            google_maps_api_key=google_maps_api_key,
+            keyword_list=keywords()
 
         )
     except Exception as e:
         print(e)
-
+        return redirect('/')

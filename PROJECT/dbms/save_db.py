@@ -186,7 +186,7 @@ def save_review():
         print(e)
 
 
-# 키워드csv의 리뷰내용과 리뷰 테이블의 리뷰내용 매칭하여 저장
+# 키워드csv의 리뷰id과 리뷰 테이블의 리뷰id 매칭하여 저장
 # 테스트 완료
 def save_keyword():
     targetPath = "project/data/processed/keyword/"

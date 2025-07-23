@@ -73,13 +73,14 @@ def accommodations_list(search_type, search_term):
                         'list' : datas
                         }
                 #print("검색결과 :",result_list)
+            dbm.DBClose()
 
 
         except Exception as e :
             print(e)
         finally :
             dbm.CloseQuery()
-            dbm.DBClose()
+            #dbm.DBClose()
             return result_list
 
     else :

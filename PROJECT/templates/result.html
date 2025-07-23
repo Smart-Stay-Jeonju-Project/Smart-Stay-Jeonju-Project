@@ -13,22 +13,22 @@
         <div class="image-section">
             <!--숙소 경로 오류 : 절대경로로 수정 -->
             <!-- oneerror : 이미지 파일 없는 경우 대체 할 이미지 설정-->
-            <img src="{{ url_for('static', filename='images/tmp/' + result_accommodation.image) }}" 
+            <img src="{{ url_for('static', filename='images/tmp/' + result_accom_detail.image) }}" 
             onerror="this.src='{{ url_for('static', filename='images/tmp/logo.jpg') }}'"
-            alt="{{ result_accommodation.name }}">
+            alt="{{ result_accom_detail.name }}">
         </div>
         <!-- 숙소 정보 -->  
         <div class="info-section">
-            <h2>{{ result_accommodation.name }}</h2>
-            {% if result_accommodation.feature != None %}
-                <p>[{{ result_accommodation.feature}}]</p>
+            <h2>{{ result_accom_detail.name }}</h2>
+            {% if result_accom_detail.feature != None %}
+                <p>[{{ result_accom_detail.feature}}]</p>
             {% endif %}
             <!--
             positive_score|float : 실수형으로 변환 
             '%.2f' % : 소수점 둘째 자리까지 포맷-->
-            <p><strong>주소:</strong> {{ result_accommodation.address }}</p>
-            <p><strong> 감성점수: 🙂: {{ ('%.2f' % (result_accommodation.positive_score|float * 100)) }}% ,
-                                🙁: {{ ('%.2f' % ((1 - result_accommodation.positive_score|float) * 100)) }}%
+            <p><strong>주소:</strong> {{ result_accom_detail.address }}</p>
+            <p><strong> 감성점수: 🙂: {{ ('%.2f' % (result_accom_detail.positive_score|float * 100)) }}% ,
+                                🙁: {{ ('%.2f' % ((1 - result_accom_detail.positive_score|float) * 100)) }}%
                 </strong></p>
             <div id="result_keyword" style="margin-top: 10px;">
                 <p><strong>키워드:</strong></p>
@@ -43,7 +43,7 @@
                 </ul>
             </div>
             <!-- {{ result_accommodation.rating | round(1) }}  : Jinja2 템플릿 문법에서 사용하는 필터(filter) -->
-            <p><strong>평점: ⭐ {{ result_accommodation.rating | round(1) }}점 <!--({{ result_accommodation.rating_count }}개 리뷰)--></strong></p>
+            <p><strong>평점: ⭐ {{ result_accom_detail.rating | round(1) }}점 <!--({{ result_accommodation.rating_count }}개 리뷰)--></strong></p>
         </div>
         <!-- 
             <p>LAT: {{ result_accommodation.lat }}</p>
@@ -55,7 +55,7 @@
             const searchTerm = "{{ search_term }}"; 
         </script>
         <script>
-            result_accommodation = {{ result_accommodation | tojson | safe }};
+            result_accom_detail = {{ result_accom_detail | tojson | safe }};
         </script>
         <script src="{{ url_for('static', filename='js/result_maps.js') }}"></script>
         <script
@@ -105,20 +105,19 @@
     <div class="review-section">
         <div class="table-wrapper">
             <h3>정제한 리뷰 영역(최신순 10개 리뷰)</h3>
-            {% if result_review %}
-                <table border = "1" width="1200px"  class="table table-striped table-hover styled-table">
-                    <thead>
-                        <tr class="table-dark">
-                            <th style="width: 10%;">닉네임</th>
-                            <th style="width: 9%;">별점</th>
-                            <th style="width: 8%;">타입</th>
-                            <th style="width: 46%;">내용</th>
-                            <th style="width: 10%;">작성날짜</th>
-                            <th style="width: 10%;">출처</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for result_review in result_review['list'] %}
+            <table border = "1" width="1200px"  class="table table-striped table-hover styled-table">
+                <thead>
+                    <tr class="table-dark">
+                        <th style="width: 10%;">닉네임</th>
+                        <th style="width: 9%;">별점</th>
+                        <th style="width: 8%;">타입</th>
+                        <th style="width: 46%;">내용</th>
+                        <th style="width: 10%;">작성날짜</th>
+                        <th style="width: 10%;">출처</th>
+                    </tr>
+                </thead>
+                {% if result_review['list'] %}
+                    {% for result_review in result_review['list'] %}
                         <tr>
                             <td>{{result_review['nickname']}}</td>
                             <td>⭐{{result_review['review_rating']}}점</td>
@@ -126,14 +125,15 @@
                             <td>{{result_review['clean_reviews']}}</td>
                             <td>{{result_review['write_date']}}</td>
                             {%if result_review['review_source'] == 'y' %}
-                            <td>여기어때</td>
+                                <td>여기어때</td>
                             {% else %}
-                            <td>야놀자</td>
+                                <td>야놀자</td>
                             {% endif%}
                         </tr>
-                        {% endfor %}
-                    </tbody>
-            {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="6">리뷰가 없습니다.</td></tr>
+                {% endif %}
         </div>
     </div>
 </div>
